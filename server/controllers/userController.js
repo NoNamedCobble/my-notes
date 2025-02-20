@@ -3,6 +3,7 @@ import User from "../models/User.js";
 
 export const createUser = async (req, res) => {
   const { email, nickname, password } = req.body;
+
   try {
     const newUser = new User({ email, nickname, password });
     await newUser.save();
@@ -14,17 +15,19 @@ export const createUser = async (req, res) => {
 
 export const login = async (req, res) => {
   const { usernameOrEmail, password } = req.body;
+
   try {
     const user = await User.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });
 
     if (!user) {
-      return new Error("User not found");
+      throw new Error("User not found");
     }
+
     const isPasswordCorrect = await user.comparePassword(password);
     if (!isPasswordCorrect) {
-      return new Error("Invalid credentials");
+      throw new Error("Invalid credentials");
     }
 
     const { _id } = user;
