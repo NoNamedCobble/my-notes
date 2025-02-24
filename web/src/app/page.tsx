@@ -4,7 +4,7 @@ export const metadata = {
   title: `${commonMetadata.title} Home`,
   description: "Simple app to manage your notes",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.svg",
   },
 };
 

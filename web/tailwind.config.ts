@@ -3,14 +3,21 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/common/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "input-gradient": "linear-gradient(180deg, rgba(214,213,241,1) 0%, rgba(250,246,255,1) 100%)",
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#2C2A4A",
+        secondary: "#FAF6FF",
+        tertiary: "#696680",
+      },
+      boxShadow: {
+        "custom-blue": "0px 2px 0.9px 0px rgba(33, 30, 89, 0.29)",
       },
     },
   },
