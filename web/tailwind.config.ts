@@ -9,7 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        "input-gradient": "linear-gradient(180deg, rgba(214,213,241,1) 0%, rgba(250,246,255,1) 100%)",
+        "input-gradient":
+          "linear-gradient(180deg, rgba(214,213,241,1) 0%, rgba(250,246,255,1) 100%)",
       },
       colors: {
         primary: "#2C2A4A",
@@ -18,6 +19,15 @@ const config: Config = {
       },
       boxShadow: {
         "custom-blue": "0px 2px 0.9px 0px rgba(33, 30, 89, 0.29)",
+      },
+      gridTemplateRows: {
+        authWrapper: "1fr 65%",
+      },
+      gridTemplateColumns: {
+        authWrapper: "1fr 40rem 1fr ",
+      },
+      borderRadius: {
+        "custom-authForm": "40px",
       },
     },
   },
