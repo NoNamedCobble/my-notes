@@ -1,14 +1,26 @@
 import Note from "../models/Note.js";
+import { StatusCodes } from "http-status-codes";
 
 export const createNote = async (req, res) => {
   const { userId } = req;
   const { title, content } = req.body;
+  if (!title || !content) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Title and content are required." });
+  }
+
   try {
     const newNote = new Note({ title, content, userId });
     await newNote.save();
-    res.sendStatus(201);
+    res
+      .status(StatusCodes.CREATED)
+      .json({ message: "Note created successfully.", note: newNote });
   } catch (error) {
-    res.sendStatus(500);
+    console.error("CreateNoteError: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
   }
 };
 
@@ -16,9 +28,12 @@ export const getNotes = async (req, res) => {
   const { userId } = req;
   try {
     const notes = await Note.find({ userId }).select("title content");
-    res.status(200).json(notes);
+    res.status(StatusCodes.OK).json(notes);
   } catch (error) {
-    res.sentStatus(500);
+    console.error("GetNoteError: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
   }
 };
 
@@ -27,12 +42,17 @@ export const getNoteById = async (req, res) => {
   try {
     const note = await Note.findById(id).select("title content");
     if (!note) {
-      return res.sendStatus(404);
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Note not found." });
     }
 
-    res.status(200).json(note);
+    res.status(StatusCodes.OK).json(note);
   } catch (error) {
-    res.sendStatus(500);
+    console.error("GetNoteById: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
   }
 };
 
@@ -42,10 +62,17 @@ export const deleteNoteById = async (req, res) => {
     const deletedNote = await Note.findByIdAndDelete(id);
 
     if (!deletedNote) {
-      return res.sendStatus(404);
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Note not found." });
     }
-    res.sendStatus(200);
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Note deleted successfully.", deletedNote });
   } catch (error) {
-    res.sendStatus(500);
+    console.error("DelteNoteById: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
   }
 };

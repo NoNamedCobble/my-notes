@@ -1,19 +1,44 @@
-import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-export const authMiddleware = async (req, res, next) => {
-  const accessToken = req.headers["authorization"]?.split(" ")[1];
+import { verifyAccessToken } from "../utils/jwtUtils.js";
+import { refreshAccessToken } from "../controllers/userController.js";
+
+import { StatusCodes } from "http-status-codes";
+
+export const authMiddleware = async (req, res, next, retried = false) => {
+  const accessToken = req.cookies["access_token"];
+
+  if (!accessToken) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: "Access tokens are missing" });
+  }
+
   try {
-    const decodedId = jwt.verify(accessToken, process.env.TOKEN_SECRET);
+    const { _id } = verifyAccessToken(accessToken);
 
-    const user = await User.findById(decodedId);
-    if (user.refreshToken === "") {
-      throw new Error("You are logged out");
+    const user = await User.findById(_id);
+    if (!user) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "User not found." });
     }
-    req.userId = decodedId;
 
+    if (user.refreshToken === "") {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "You are logout." });
+    }
+
+    req.userId = _id;
     next();
   } catch (error) {
-    res.sendStatus(401);
+    // if (error.name === "TokenExpiredError" && !retried) {
+    //   return await refreshAccessToken(req, res, next);
+    // }
+
+    res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: "Invalid access token." });
   }
 };

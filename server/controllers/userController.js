@@ -1,90 +1,146 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { StatusCodes } from "http-status-codes";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "../utils/jwtUtils.js";
 
 export const createUser = async (req, res) => {
   const { email, nickname, password } = req.body;
 
+  if (!email || !nickname || !password) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "All fields are required." });
+  }
+
   try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .json({ message: "A user with this email already exists." });
+    }
+
     const newUser = new User({ email, nickname, password });
     await newUser.save();
-    res.sendStatus(201);
+    res.status(StatusCodes.CREATED).json({ message: "User has been created." });
   } catch (error) {
-    res.sendStatus(500);
+    console.log("CreateUserError: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
   }
 };
 
 export const login = async (req, res) => {
-  const { usernameOrEmail, password } = req.body;
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "All fields are required." });
+  }
 
   try {
-    const user = await User.findOne({
-      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
-    });
-
-    if (!user) {
-      throw new Error("User not found");
+    const user = await User.findOne({ email });
+    if (!user || !(await user.comparePassword(password))) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Invalid email or password." });
     }
-
-    const isPasswordCorrect = await user.comparePassword(password);
-    if (!isPasswordCorrect) {
-      throw new Error("Invalid credentials");
-    }
-
     const { _id } = user;
-
-    const accessToken = jwt.sign({ _id }, process.env.TOKEN_SECRET, {
-      expiresIn: "15m",
-    });
-    const refreshToken = jwt.sign({ _id }, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: "24h",
-    });
+    const accessToken = generateAccessToken({ _id });
+    const refreshToken = generateRefreshToken({ _id });
 
     user.refreshToken = refreshToken;
     await user.save();
 
-    res.send({ accessToken, refreshToken });
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
+    });
+
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
+    });
+
+    res.status(StatusCodes.OK).json({ message: "Tokens set in cookies" });
   } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
+    console.log("LoginError: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
   }
 };
 
 export const logout = async (req, res) => {
-  const { _id } = req.body;
+  const { userId } = req;
   try {
-    const user = await User.findById(_id);
+    const user = await User.findById(userId);
+    if (!user)
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "User not found." });
+
     user.refreshToken = "";
     await user.save();
-    res.sendStatus(200);
+
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+      sameSite: "Strict",
+    });
+
+    res.clearCookie("refresh_token", {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+      sameSite: "Strict",
+    });
+
+    res.status(StatusCodes.OK).json({ message: "Successfully logged out." });
   } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
+    console.log("LogoutError: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
   }
 };
 
-export const refreshAccessToken = async (req, res) => {
-  const { refreshToken } = req.body;
+export const refreshAccessToken = async (req, res, next) => {
+  const refreshToken = req.cookies["refresh_token"];
+
   try {
-    const decodedId = jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET
-    );
-
-    const user = await User.findById(decodedId);
-    if (user.refreshToken === "") {
-      throw new Error("You are logged out");
+    const { _id } = verifyRefreshToken(refreshToken);
+    console.log(_id);
+    const user = await User.findById(_id);
+    if (!user) {
+      console.log("tu sie wywalam");
+      return false;
     }
 
-    if (user.refreshToken !== refreshToken) {
-      throw new Error("Incorrect refresh token");
-    }
-    const { _id } = user;
-    const accessToken = jwt.sign({ _id }, process.env.TOKEN_SECRET, {
-      expiresIn: "24h",
+    const newAccessToken = generateAccessToken({ _id });
+    console.log("nowy: ", newAccessToken);
+    res.cookie("access_token", newAccessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
     });
-
-    res.send({ accessToken });
   } catch (error) {
-    res.sendStatus(401);
+    console.log("RefreshAccessTokenError:", error);
+    return false;
   }
+
+  authMiddleware(req, res, next, true);
 };
