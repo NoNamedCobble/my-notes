@@ -1,8 +1,8 @@
-import express from "express";
-import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
+import express from "express";
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -10,7 +10,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors( {
+  origin: "http://localhost:3001",
+  credentials: true,
+}));
 
 import noteRoutes from "./routes/notes.js";
 import userRoutes from "./routes/users.js";

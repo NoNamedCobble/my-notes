@@ -20,12 +20,8 @@ const config: Config = {
       boxShadow: {
         "custom-blue": "0px 2px 0.9px 0px rgba(33, 30, 89, 0.29)",
       },
-      gridTemplateRows: {
-        authWrapper: "1fr minmax(65%, fit-content)",
-        authWrapperDesktop: "1fr 36rem 1fr",
-      },
       gridTemplateColumns: {
-        authWrapper: "1fr 40rem 1fr",
+        "custom-dashboard-header": "auto 1fr auto",
       },
       borderRadius: {
         "custom-authForm": "40px",

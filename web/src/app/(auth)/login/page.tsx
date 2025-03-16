@@ -1,5 +1,4 @@
-import LoginForm from "@/app/login/LoginForm";
-import AuthWrapper from "@/common/components/AuthWrapper";
+import LoginForm from "@/app/(auth)/login/LoginForm";
 
 import { commonMetadata } from "@/common/shared-metadata";
 
@@ -9,9 +8,5 @@ export const metadata = {
 };
 
 export default function Login() {
-  return (
-    <AuthWrapper>
-      <LoginForm />
-    </AuthWrapper>
-  );
+  return <LoginForm />;
 }
