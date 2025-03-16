@@ -11,7 +11,14 @@ type InputProps = {
   isRequired?: boolean;
 };
 
-export default function FormInput({ title, type, iconSrc, value, setValue, isRequired = false }: InputProps) {
+export default function FormInput({
+  title,
+  type,
+  iconSrc,
+  value,
+  setValue,
+  isRequired = false,
+}: InputProps) {
   const handleChangeValue = (targetValue: string) => {
     setValue(targetValue);
   };

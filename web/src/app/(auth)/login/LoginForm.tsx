@@ -4,6 +4,8 @@ import { StatusCodes } from "http-status-codes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import WarningPopup from "@/common/components/WarningPopup";
+import { usePopup } from "@/common/hooks/usePopup";
 
 import api from "@/utils/axios";
 
@@ -15,7 +17,7 @@ interface LoginPayload {
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isError, setIsError] = useState<boolean>(false);
+  const { isPopupOpen, openPopup, popupMessage } = usePopup();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -30,11 +32,12 @@ export default function LoginForm() {
       if (response.status === StatusCodes.OK) {
         router.push("/dashboard");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.log("LoginError: ", err);
+      const errorMessage: string = err.response?.data?.message;
+      openPopup(errorMessage);
       setEmail("");
       setPassword("");
-      setIsError(true);
     }
   };
 
@@ -69,19 +72,20 @@ export default function LoginForm() {
       </Link>
       <button
         type="submit"
-        className="bg-primary text-secondary self-center rounded-full px-10 py-2 text-xl md:text-2xl"
+        className="self-center rounded-full bg-primary px-10 py-2 text-xl text-secondary md:text-2xl"
       >
         Login
       </button>
-      <p className="text-tertiary m-1 self-center text-base md:text-lg">
+      <p className="m-1 self-center text-base text-tertiary md:text-lg">
         Don't have account?
         <Link
           href="/signup"
-          className="text-primary inline-block p-2 font-medium"
+          className="inline-block p-2 font-medium text-primary"
         >
           Sign Up
         </Link>
       </p>
+      <WarningPopup message={popupMessage} isOpen={isPopupOpen} />
     </form>
   );
 }
