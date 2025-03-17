@@ -9,3 +9,9 @@ export interface DotsProps {
   multiplier: number;
   amount: number;
 }
+
+export type NoteProps = {
+  _id: string;
+  title: string;
+  content: string;
+};

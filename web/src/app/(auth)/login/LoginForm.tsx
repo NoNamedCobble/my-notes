@@ -1,13 +1,13 @@
 "use client";
 import FormInput from "@/common/components/FormInput";
+import WarningPopup from "@/common/components/WarningPopup";
+import { useTimeoutPopup } from "@/common/hooks/useTimeoutPopup";
 import { StatusCodes } from "http-status-codes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import WarningPopup from "@/common/components/WarningPopup";
-import { usePopup } from "@/common/hooks/usePopup";
 
-import api from "@/utils/axios";
+import api from "@/common/utils/axios";
 
 interface LoginPayload {
   email: string;
@@ -17,7 +17,7 @@ interface LoginPayload {
 export default function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { isPopupOpen, openPopup, popupMessage } = usePopup();
+  const { isPopupOpen, openPopup, popupMessage } = useTimeoutPopup();
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -72,15 +72,15 @@ export default function LoginForm() {
       </Link>
       <button
         type="submit"
-        className="self-center rounded-full bg-primary px-10 py-2 text-xl text-secondary md:text-2xl"
+        className="bg-primary text-secondary self-center rounded-full px-10 py-2 text-xl md:text-2xl"
       >
         Login
       </button>
-      <p className="m-1 self-center text-base text-tertiary md:text-lg">
+      <p className="text-tertiary m-1 self-center text-base md:text-lg">
         Don't have account?
         <Link
           href="/signup"
-          className="inline-block p-2 font-medium text-primary"
+          className="text-primary inline-block p-2 font-medium"
         >
           Sign Up
         </Link>

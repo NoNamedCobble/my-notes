@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const usePopup = (timeout: number = 5000) => {
+export const useTimeoutPopup = (timeout: number = 5000) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const openPopup = (message: string = "Something went wrong.") => {

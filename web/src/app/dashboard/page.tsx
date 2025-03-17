@@ -1,16 +1,15 @@
 "use client";
 import FormInput from "@/common/components/FormInput";
 import Navigation from "@/common/components/Navigation";
-import api from "@/utils/axios";
+import Notes from "@/common/components/Notes";
 import { motion } from "framer-motion";
-import { StatusCodes } from "http-status-codes";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Dashboard() {
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
-  const [searchValue, setSerachValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
 
   const handleToggleNav = () => {
     setIsNavOpen((prevIsNavOpen) => !prevIsNavOpen);
@@ -21,24 +20,9 @@ export default function Dashboard() {
     rotate: { delay: isNavOpen ? 0.1 : 0, duration: 0.1 },
   };
 
-  useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await api.get("notes/");
-        if (response.status === StatusCodes.OK) {
-          console.log(response.data);
-        }
-      } catch (err) {
-        console.log("GetNotesError: ", err);
-      }
-    };
-
-    fetchNotes();
-  }, []);
-
   return (
     <>
-      <header className="lg:grid-cols-custom-dashboard-header grid w-full grid-cols-4 grid-rows-2 items-center p-2 lg:grid-rows-none lg:gap-5">
+      <header className="bg-primary lg:grid-cols-custom-dashboard-header sticky top-0 z-10 grid w-full grid-cols-4 grid-rows-2 items-center p-2 lg:grid-rows-none lg:gap-5">
         <Link
           href="/"
           className="text-secondary col-span-2 col-start-1 ml-4 text-4xl font-semibold lg:col-span-1"
@@ -77,7 +61,7 @@ export default function Dashboard() {
             type="text"
             iconSrc="images/search.svg"
             value={searchValue}
-            setValue={setSerachValue}
+            setValue={setSearchValue}
           />
           <button className="h-14 w-14">
             <Image
@@ -92,6 +76,7 @@ export default function Dashboard() {
 
         <Navigation isNavOpen={isNavOpen} />
       </header>
+      <Notes searchValue={searchValue} />
     </>
   );
 }
