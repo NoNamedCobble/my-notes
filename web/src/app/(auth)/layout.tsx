@@ -3,11 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 
-type AuthWrapperProps = {
+type AuthLayoutProps = {
   children: ReactNode;
 };
 
-export default function AuthWrapper({ children }: AuthWrapperProps) {
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="relative grid h-dvh grid-rows-3 lg:grid-cols-4 lg:grid-rows-5">
       <header className="text-secondary my-auto ml-2 w-fit p-2 lg:col-start-1 lg:mb-0 lg:ml-5">

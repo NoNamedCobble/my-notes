@@ -1,12 +1,95 @@
-import LoginForm from "@/app/(auth)/login/LoginForm";
+"use client";
+import FormInput from "@/common/components/FormInput";
+import WarningPopup from "@/common/components/WarningPopup";
+import { useTimeoutPopup } from "@/common/hooks/useTimeoutPopup";
+import { callApi } from "@/common/utils/axios";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { commonMetadata } from "@/common/shared-metadata";
-
-export const metadata = {
-  title: `${commonMetadata.title} Login`,
-  description: "Login to my notes",
-};
+interface LoginPayload {
+  email: string;
+  password: string;
+}
 
 export default function Login() {
-  return <LoginForm />;
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const { isPopupOpen, openPopup, popupMessage } = useTimeoutPopup();
+  const router = useRouter();
+
+  const onError = (err: any) => {
+    console.log("LoginError: ", err);
+    const errorMessage: string = err.response?.data?.message;
+    openPopup(errorMessage);
+    setEmail("");
+    setPassword("");
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const data: LoginPayload = {
+      email,
+      password,
+    };
+
+    const response = await callApi<LoginPayload>({
+      method: "POST",
+      url: "/users/login",
+      data,
+      onError,
+    });
+
+    if (response) {
+      router.push("/dashboard");
+    }
+  };
+
+  return (
+    <form
+      onSubmit={(e) => handleLogin(e)}
+      className="mx-auto flex max-w-sm flex-col items-start portrait:max-w-lg"
+    >
+      <h2 className="mb-3 text-2xl font-semibold md:mb-6 md:text-3xl lg:self-center lg:text-4xl">
+        Login
+      </h2>
+      <FormInput
+        title="email"
+        type="email"
+        iconSrc="images/email.svg"
+        value={email}
+        setValue={setEmail}
+      />
+      <FormInput
+        title="password"
+        type="password"
+        iconSrc="images/password.svg"
+        value={password}
+        setValue={setPassword}
+        isRequired
+      />
+      <Link
+        href="/"
+        className="mb-7 block self-end text-base font-medium md:text-lg"
+      >
+        Forgot Password?
+      </Link>
+      <button
+        type="submit"
+        className="bg-primary text-secondary self-center rounded-full px-10 py-2 text-xl md:text-2xl"
+      >
+        Login
+      </button>
+      <p className="text-tertiary m-1 self-center text-base md:text-lg">
+        Don't have account?
+        <Link
+          href="/signup"
+          className="text-primary inline-block p-2 font-medium"
+        >
+          Sign Up
+        </Link>
+      </p>
+      <WarningPopup message={popupMessage} isOpen={isPopupOpen} />
+    </form>
+  );
 }

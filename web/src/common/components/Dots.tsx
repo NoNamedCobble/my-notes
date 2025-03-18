@@ -1,7 +1,7 @@
 "use client";
 import Dot from "@/common/components/Dot";
-import { useCallback, useState } from "react";
 import { Position } from "@/common/types";
+import { useCallback, useState } from "react";
 
 import { DotsProps } from "@/common/types";
 

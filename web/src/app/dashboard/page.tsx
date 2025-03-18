@@ -2,14 +2,17 @@
 import FormInput from "@/common/components/FormInput";
 import Navigation from "@/common/components/Navigation";
 import Notes from "@/common/components/Notes";
+import { NoteProps } from "@/common/types";
+import { callApi } from "@/common/utils/axios";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [notes, setNotes] = useState<NoteProps[]>([]);
 
   const handleToggleNav = () => {
     setIsNavOpen((prevIsNavOpen) => !prevIsNavOpen);
@@ -19,6 +22,20 @@ export default function Dashboard() {
     y: { delay: isNavOpen ? 0 : 0.1, duration: 0.1 },
     rotate: { delay: isNavOpen ? 0.1 : 0, duration: 0.1 },
   };
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      const response = await callApi({
+        method: "GET",
+        url: "/notes",
+      });
+      if (response) {
+        setNotes(response.data);
+      }
+    };
+
+    fetchNotes();
+  }, []);
 
   return (
     <>
@@ -76,7 +93,7 @@ export default function Dashboard() {
 
         <Navigation isNavOpen={isNavOpen} />
       </header>
-      <Notes searchValue={searchValue} />
+      <Notes searchValue={searchValue} notes={notes} />
     </>
   );
 }
