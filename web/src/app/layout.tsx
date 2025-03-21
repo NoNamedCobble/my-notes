@@ -2,7 +2,7 @@ import { Jost } from "@next/font/google";
 
 import "./globals.css";
 
-const jost = Jost({ subsets: ["latin"], weight: ["400", "500", "700"] });
+const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500", "700"] });
 
 export default function RootLayout({
   children,

@@ -19,3 +19,7 @@ export interface NoteProps {
 export interface LayoutProps {
   children: React.ReactNode;
 }
+
+export interface LayoutProps {
+  children: React.ReactNode;
+}
