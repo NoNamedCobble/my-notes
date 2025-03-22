@@ -9,11 +9,16 @@ const noteSchema = new mongoose.Schema(
     },
     content: {
       type: String,
-      required: true,
+      trim: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    background: {
+      type: String,
+      trim: true,
       required: true,
     },
   },
