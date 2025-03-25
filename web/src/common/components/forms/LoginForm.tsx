@@ -1,0 +1,76 @@
+"use client";
+import FormInput from "@/common/components/forms/FormInput";
+import SubmitButton from "@/common/components/forms/SubmitButton";
+import { login } from "@/common/utils/auth";
+import { loginSchema } from "@/common/utils/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+
+type FormFields = z.infer<typeof loginSchema>;
+export default function LoginForm() {
+  const router = useRouter();
+  const { control, handleSubmit, reset, setError, formState } =
+    useForm<FormFields>({
+      resolver: zodResolver(loginSchema),
+      mode: "onSubmit",
+    });
+  const { errors, isSubmitting } = formState;
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    const { success, message } = await login(data);
+    if (!success) {
+      reset();
+      setError("root", { message });
+      return;
+    }
+
+    router.push("/dashboard");
+  };
+
+  return (
+    <>
+      <form
+        className="relative mx-auto flex max-w-sm flex-col gap-3 portrait:max-w-lg"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+      >
+        <h2 className="text-2xl font-semibold md:mb-6 md:text-3xl lg:self-center lg:text-4xl">
+          Login
+        </h2>
+        <FormInput
+          name="email"
+          iconSrc="images/email.svg"
+          control={control}
+          placeholder="Email"
+          type="email"
+        />
+        <FormInput
+          name="password"
+          iconSrc="images/password.svg"
+          control={control}
+          placeholder="Password"
+          type="password"
+        />
+        <Link
+          href="/"
+          className="relative block self-end text-base font-medium md:text-lg"
+        >
+          Forgot Password?
+        </Link>
+        <SubmitButton isSubmitting={isSubmitting} title="Login" />
+        <p className="m-1 self-center text-base text-tertiary md:text-lg">
+          Don't have account?
+          <Link
+            href="/signup"
+            className="inline-block p-2 font-medium text-primary"
+          >
+            Sign Up
+          </Link>
+        </p>
+      </form>
+    </>
+  );
+}

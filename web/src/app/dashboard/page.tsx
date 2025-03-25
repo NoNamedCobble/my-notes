@@ -1,11 +1,11 @@
 "use client";
-import FormInput from "@/common/components/FormInput";
+import FormInput from "@/common/components/forms/FormInput";
 import Navigation from "@/common/components/Navigation";
 import NavigationButton from "@/common/components/NavigationButton";
 import Notes from "@/common/components/Notes";
 import { useNav } from "@/common/hooks/useNav";
 import { NoteProps } from "@/common/types";
-import { callApi } from "@/common/utils/axios";
+import { callApi } from "@/common/utils/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -31,10 +31,10 @@ export default function Dashboard() {
 
   return (
     <>
-      <header className="bg-primary lg:grid-cols-custom-dashboard-header sticky top-0 z-10 grid w-full grid-cols-4 grid-rows-2 items-center p-2 lg:grid-rows-none lg:gap-5">
+      <header className="sticky top-0 z-10 grid w-full grid-cols-4 grid-rows-2 items-center bg-primary p-2 lg:grid-cols-custom-dashboard-header lg:grid-rows-none lg:gap-5">
         <Link
           href="/"
-          className="text-secondary col-span-2 col-start-1 ml-4 text-4xl font-semibold lg:col-span-1"
+          className="col-span-2 col-start-1 ml-4 text-4xl font-semibold text-secondary lg:col-span-1"
         >
           <h1>My notes</h1>
         </Link>

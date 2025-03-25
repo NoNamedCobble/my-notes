@@ -12,18 +12,9 @@ export const api = axios.create({
 type callApiProps<T> = {
   method: "POST" | "GET" | "PUT" | "DELETE";
   url: string;
-  data?: T | null;
-  onError?: (err: any) => void;
+  data: T;
 };
-
-const isSuccessfulResponse = (status: number) => status >= 200 && status <= 299;
-
-export const callApi = async <T = any>({
-  method,
-  url,
-  data,
-  onError = () => {},
-}: callApiProps<T>) => {
+export const callApi = async <T>({ method, url, data }: callApiProps<T>) => {
   try {
     const response = await api.request({
       url,
@@ -31,10 +22,10 @@ export const callApi = async <T = any>({
       data,
     });
 
-    if (isSuccessfulResponse(response.status)) {
-      return response;
-    }
+    return { success: true, data: response.data };
   } catch (err: any) {
-    onError(err);
+    const message: string =
+      err.response?.data?.message || "Something went wrong.";
+    return { success: false, message };
   }
 };

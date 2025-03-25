@@ -2,12 +2,12 @@
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 
-type PopupProps = {
+type WarningPopupProps = {
   message: string;
   isOpen: boolean;
 };
 
-export default function Popup({ message, isOpen }: PopupProps) {
+export default function WarningPopup({ message, isOpen }: WarningPopupProps) {
   return (
     <AnimatePresence>
       {isOpen && (

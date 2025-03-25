@@ -16,6 +16,7 @@ const config: Config = {
         primary: "#2C2A4A",
         secondary: "#FAF6FF",
         tertiary: "#696680",
+        quaternary: "#4F518C",
       },
       boxShadow: {
         "custom-blue": "0px 2px 0.9px 0px rgba(33, 30, 89, 0.29)",

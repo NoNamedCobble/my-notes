@@ -3,13 +3,6 @@ export interface Position {
   y: number;
 }
 
-export interface DotsProps {
-  maxDotLength: number;
-  minDotLength: number;
-  multiplier: number;
-  amount: number;
-}
-
 export interface NoteProps {
   _id: string;
   title: string;
