@@ -1,5 +1,5 @@
 "use client";
-import FormInput from "@/common/components/forms/FormInput";
+import FormInput from "@/common/components/FormInput";
 import Navigation from "@/common/components/Navigation";
 import NavigationButton from "@/common/components/NavigationButton";
 import Notes from "@/common/components/Notes";

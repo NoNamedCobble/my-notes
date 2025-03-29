@@ -1,6 +1,6 @@
 "use client";
-import FormInput from "@/common/components/forms/FormInput";
-import SubmitButton from "@/common/components/forms/SubmitButton";
+import FormInput from "@/common/components/FormInput";
+import SubmitButton from "@/common/components/SubmitButton";
 import { signup } from "@/common/utils/auth";
 import { signupSchema } from "@/common/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,11 +31,11 @@ export default function SignupForm() {
   };
   return (
     <form
-      className="relative mx-auto flex max-w-sm flex-col gap-3 portrait:max-w-lg"
+      className="relative mx-auto flex max-w-md flex-col gap-3"
       onSubmit={handleSubmit(onSubmit)}
       noValidate
     >
-      <h2 className="mb-3 text-2xl font-semibold md:mb-4 md:text-3xl lg:self-center lg:text-4xl">
+      <h2 className="mb-3 text-2xl font-semibold md:text-3xl lg:self-center lg:text-4xl">
         Create an account
       </h2>
       <FormInput
