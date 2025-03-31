@@ -82,7 +82,7 @@ export default function SignupForm() {
           Already have an account?
           <Link
             href="/login"
-            className="inline-block p-2 font-medium text-primary"
+            className="inline-block p-2 font-medium text-primary bg-custom-linkGradient bg-center bg-cover"
           >
             Log in
           </Link>

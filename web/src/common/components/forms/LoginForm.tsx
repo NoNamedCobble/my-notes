@@ -77,7 +77,7 @@ export default function LoginForm() {
           Don't have account?
           <Link
             href="/signup"
-            className="inline-block p-2 font-medium text-primary"
+            className="inline-block p-2 font-medium text-primary bg-custom-linkGradient bg-center bg-cover"
           >
             Sign Up
           </Link>

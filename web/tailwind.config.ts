@@ -11,6 +11,8 @@ const config: Config = {
       backgroundImage: {
         "input-gradient":
           "linear-gradient(180deg, rgba(214,213,241,1) 0%, rgba(250,246,255,1) 100%)",
+        "custom-linkGradient": "url('/images/link-gradient.png')",
+        "custom-waves": "url('/images/waves.svg')",
       },
       colors: {
         primary: "#2C2A4A",

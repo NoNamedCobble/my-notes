@@ -5,8 +5,8 @@ import Link from "next/link";
 
 export default function AuthLayout({ children }: LayoutProps) {
   return (
-    <div className="flex h-dvh min-h-fit flex-col justify-end gap-4 lg:landscape:items-center lg:landscape:justify-center">
-      <header className="my-auto p-4 text-secondary lg:landscape:absolute lg:landscape:left-0 lg:landscape:top-0">
+    <div className="relative flex h-dvh min-h-fit flex-col justify-end gap-4 lg:landscape:items-center lg:landscape:justify-center bg-custom-waves bg-no-repeat bg-cover bg-center">
+      <header className="my-auto p-4 text-secondary lg:landscape:absolute lg:landscape:left-0 lg:landscape:top-0 lg:landscape:p-5">
         <Link href="/">
           <h1 className="inline-block text-4xl md:text-5xl">
             Notes
@@ -21,7 +21,7 @@ export default function AuthLayout({ children }: LayoutProps) {
           </p>
         </Link>
       </header>
-      <main className="relative h-3/4 min-h-fit w-full rounded-t-custom-authForm bg-secondary p-7 lg:landscape:h-fit lg:landscape:max-w-xl lg:landscape:rounded-custom-authForm">
+      <main className="relative min-h-[65%] w-full rounded-t-custom-authForm bg-secondary p-7 lg:landscape:min-h-fit lg:landscape:p-10 lg:landscape:max-w-xl lg:landscape:rounded-custom-authForm">
         {children}
         <Image
           src="images/notes.svg"
