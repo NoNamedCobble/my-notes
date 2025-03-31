@@ -48,7 +48,7 @@ export default function FormInput({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="mt-1 text-red-700"
+            className="mt-1 ml-10 text-red-700"
             role="alert"
             aria-live="assertive"
           >

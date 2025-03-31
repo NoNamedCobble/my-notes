@@ -8,6 +8,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useModal } from "@/common/hooks/useModal";
+import { useState } from "react";
+import WarningPopup from "@/common/components/modals/WarningPopup";
 
 type FormFields = z.infer<typeof signupSchema>;
 export default function SignupForm() {
@@ -17,63 +20,74 @@ export default function SignupForm() {
       resolver: zodResolver(signupSchema),
       mode: "onSubmit",
     });
-  const { errors, isSubmitting } = formState;
+  const { isSubmitting } = formState;
+  const [errorMessage, setErrorMessage] = useState("");
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     const { success, message } = await signup(data);
-    if (!success) {
-      reset();
-      setError("root", { message });
-      return;
+    if (success) {
+      return router.push("/dashboard");
     }
 
-    router.push("/login");
+    reset();
+    if (message) {
+      setErrorMessage(message);
+      openModal();
+    }
   };
   return (
-    <form
-      className="relative mx-auto flex max-w-md flex-col gap-3"
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-    >
-      <h2 className="mb-3 text-2xl font-semibold md:text-3xl lg:self-center lg:text-4xl">
-        Create an account
-      </h2>
-      <FormInput
-        control={control}
-        name="email"
-        type="email"
-        placeholder="Email"
-        iconSrc="images/email.svg"
+    <>
+      <WarningPopup
+        message={errorMessage}
+        isOpen={isModalOpen}
+        onClose={closeModal}
       />
-      <FormInput
-        control={control}
-        name="nickname"
-        placeholder="Nickname"
-        iconSrc="images/person.svg"
-      />
-      <FormInput
-        control={control}
-        name="password"
-        type="password"
-        placeholder="Password"
-        iconSrc="images/password.svg"
-      />
-      <Link
-        href="/"
-        className="mb-7 block self-end text-base font-medium md:text-lg"
+      <form
+        className="relative mx-auto flex max-w-md flex-col gap-3"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
       >
-        Forgot Password?
-      </Link>
-      <SubmitButton isSubmitting={isSubmitting} title="Signup" />
-      <p className="m-1 self-center text-base text-tertiary md:text-lg">
-        Already have an account?
+        <h2 className="mb-3 text-2xl font-semibold md:text-3xl lg:self-center lg:text-4xl">
+          Create an account
+        </h2>
+        <FormInput
+          control={control}
+          name="email"
+          type="email"
+          placeholder="Email"
+          iconSrc="images/email.svg"
+        />
+        <FormInput
+          control={control}
+          name="nickname"
+          placeholder="Nickname"
+          iconSrc="images/person.svg"
+        />
+        <FormInput
+          control={control}
+          name="password"
+          type="password"
+          placeholder="Password"
+          iconSrc="images/password.svg"
+        />
         <Link
-          href="/login"
-          className="inline-block p-2 font-medium text-primary"
+          href="/"
+          className="mb-7 block self-end text-base font-medium md:text-lg"
         >
-          Log in
+          Forgot Password?
         </Link>
-      </p>
-    </form>
+        <SubmitButton isSubmitting={isSubmitting} title="Signup" />
+        <p className="m-1 self-center text-base text-tertiary md:text-lg">
+          Already have an account?
+          <Link
+            href="/login"
+            className="inline-block p-2 font-medium text-primary"
+          >
+            Log in
+          </Link>
+        </p>
+      </form>
+    </>
   );
 }

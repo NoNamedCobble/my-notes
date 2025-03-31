@@ -8,6 +8,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useModal } from "@/common/hooks/useModal";
+import WarningPopup from "../modals/WarningPopup";
+import { useState } from "react";
 
 type FormFields = z.infer<typeof loginSchema>;
 export default function LoginForm() {
@@ -17,21 +20,30 @@ export default function LoginForm() {
       resolver: zodResolver(loginSchema),
       mode: "onSubmit",
     });
-  const { errors, isSubmitting } = formState;
+  const { isSubmitting } = formState;
+  const [errorMessage, setErrorMessage] = useState("");
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     const { success, message } = await login(data);
-    if (!success) {
-      reset();
-      setError("root", { message });
-      return;
+    if (success) {
+      return router.push("/dashboard");
     }
 
-    router.push("/dashboard");
+    reset();
+    if (message) {
+      setErrorMessage(message);
+      openModal();
+    }
   };
 
   return (
     <>
+      <WarningPopup
+        message={errorMessage}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
       <form
         className="relative mx-auto flex max-w-sm flex-col gap-3"
         onSubmit={handleSubmit(onSubmit)}
