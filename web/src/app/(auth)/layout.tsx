@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function AuthLayout({ children }: LayoutProps) {
   return (
-    <div className="relative flex h-dvh min-h-fit flex-col justify-end gap-4 lg:landscape:items-center lg:landscape:justify-center bg-custom-waves bg-no-repeat bg-cover bg-center">
+    <div className="relative flex h-dvh min-h-fit flex-col justify-end gap-4 bg-custom-waves bg-cover bg-bottom bg-no-repeat lg:landscape:items-center lg:landscape:justify-center">
       <header className="my-auto p-4 text-secondary lg:landscape:absolute lg:landscape:left-0 lg:landscape:top-0 lg:landscape:p-5">
         <Link href="/">
           <h1 className="inline-block text-4xl md:text-5xl">
@@ -21,14 +21,14 @@ export default function AuthLayout({ children }: LayoutProps) {
           </p>
         </Link>
       </header>
-      <main className="relative min-h-[65%] w-full rounded-t-custom-authForm bg-secondary p-7 lg:landscape:min-h-fit lg:landscape:p-10 lg:landscape:max-w-xl lg:landscape:rounded-custom-authForm">
+      <main className="relative min-h-[65%] w-full rounded-t-custom-authForm bg-secondary p-7 lg:landscape:min-h-fit lg:landscape:max-w-xl lg:landscape:rounded-custom-authForm lg:landscape:p-9">
         {children}
         <Image
           src="images/notes.svg"
           width="200"
           height="200"
           alt="notes"
-          className="absolute right-0 top-0 z-10 w-2/4 max-w-64 -translate-y-3/4 lg:max-w-72 lg:landscape:bottom-0 lg:landscape:top-auto lg:landscape:translate-x-2/4 lg:landscape:translate-y-1/4"
+          className="absolute right-0 top-0 z-10 w-2/4 max-w-64 -translate-y-3/4 lg:max-w-72 lg:landscape:bottom-0 lg:landscape:top-auto lg:landscape:translate-x-2/4 lg:landscape:translate-y-[15%]"
         />
       </main>
 

@@ -1,33 +1,15 @@
 "use client";
-import FormInput from "@/common/components/FormInput";
 import Navigation from "@/common/components/Navigation";
 import NavigationButton from "@/common/components/NavigationButton";
 import Notes from "@/common/components/Notes";
 import { useNav } from "@/common/hooks/useNav";
-import { NoteProps } from "@/common/types";
-import { callApi } from "@/common/utils/api";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Dashboard() {
   const { isNavOpen, toggleNav } = useNav();
   const [searchValue, setSearchValue] = useState<string>("");
-  const [notes, setNotes] = useState<NoteProps[]>([]);
-
-  useEffect(() => {
-    const fetchNotes = async () => {
-      const response = await callApi({
-        method: "GET",
-        url: "/notes",
-      });
-      if (response) {
-        setNotes(response.data);
-      }
-    };
-
-    fetchNotes();
-  }, []);
 
   return (
     <>
@@ -43,12 +25,12 @@ export default function Dashboard() {
         </div>
 
         <div className="col-span-full flex w-full max-w-screen-sm justify-between gap-1 lg:col-span-1 lg:col-start-2">
-          <FormInput
-            title="search"
+          <input
             type="text"
-            iconSrc="images/search.svg"
+            className="h-14 w-full p-4"
+            placeholder="Search notes..."
+            onChange={(e) => setSearchValue(e.target.value)}
             value={searchValue}
-            setValue={setSearchValue}
           />
           <button className="h-14 w-14">
             <Image
@@ -62,7 +44,7 @@ export default function Dashboard() {
         </div>
         <Navigation isNavOpen={isNavOpen} toggleNav={toggleNav} />
       </header>
-      <Notes searchValue={searchValue} notes={notes} />
+      <Notes searchValue={searchValue} />
     </>
   );
 }

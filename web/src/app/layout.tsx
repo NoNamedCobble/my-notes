@@ -1,8 +1,20 @@
+import WarningPopup from "@/common/components/modals/WarningPopup";
+import QueryProvider from "@/common/components/providers/QueryProvider";
 import { Jost } from "@next/font/google";
-
 import "./globals.css";
 
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500", "700"] });
+
+export const metadata = {
+  title: {
+    default: "My Notes",
+    template: "My Notes | %s",
+  },
+  description: "Simple app to manage your notes",
+  icons: {
+    icon: "/images/notes.svg",
+  },
+};
 
 export default function RootLayout({
   children,
@@ -11,8 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <WarningPopup />
       <body className={`${jost.className} mx-auto max-w-[1920px] bg-primary`}>
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

@@ -1,18 +1,10 @@
 "use client";
-import Image from "next/image";
+import { usePopupStore } from "@/store/usePopupStore";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 
-type WarningPopupProps = {
-  message: string;
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-export default function WarningPopup({
-  message,
-  isOpen,
-  onClose,
-}: WarningPopupProps) {
+export default function WarningPopup() {
+  const { isOpen, message, closePopup } = usePopupStore();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -36,12 +28,12 @@ export default function WarningPopup({
           />
           <p className="whitespace-nowrap text-xl">{message}</p>
           <button
-            onClick={onClose}
+            onClick={closePopup}
             aria-label="Close warning message"
-            className="relative w-9 h-9 flex justify-center items-center"
+            className="relative flex h-9 w-9 items-center justify-center"
           >
-            <span className="absolute bg-secondary h-0.5 w-3/4 rotate-45"></span>
-            <span className="absolute bg-secondary h-0.5 w-3/4 -rotate-45"></span>
+            <span className="absolute h-0.5 w-3/4 rotate-45 bg-secondary"></span>
+            <span className="absolute h-0.5 w-3/4 -rotate-45 bg-secondary"></span>
           </button>
         </motion.div>
       )}
