@@ -2,13 +2,11 @@
 import Navigation from "@/common/components/Navigation";
 import NavigationButton from "@/common/components/NavigationButton";
 import Notes from "@/common/components/Notes";
-import { useNav } from "@/common/hooks/useNav";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function Dashboard() {
-  const { isNavOpen, toggleNav } = useNav();
   const [searchValue, setSearchValue] = useState<string>("");
 
   return (
@@ -21,7 +19,7 @@ export default function Dashboard() {
           <h1>My notes</h1>
         </Link>
         <div className="z-10 -col-start-2 row-start-1">
-          <NavigationButton isNavOpen={isNavOpen} toggleNav={toggleNav} />
+          <NavigationButton />
         </div>
 
         <div className="col-span-full flex w-full max-w-screen-sm justify-between gap-1 lg:col-span-1 lg:col-start-2">
@@ -42,7 +40,7 @@ export default function Dashboard() {
             />
           </button>
         </div>
-        <Navigation isNavOpen={isNavOpen} toggleNav={toggleNav} />
+        <Navigation />
       </header>
       <Notes searchValue={searchValue} />
     </>

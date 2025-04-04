@@ -1,4 +1,4 @@
-import { api } from "@/api/instance";
+import { api } from "@/services/api/instance";
 import { NoteProps } from "@/common/types";
 
 export async function getNotes(): Promise<NoteProps[]> {

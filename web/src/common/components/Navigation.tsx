@@ -1,14 +1,10 @@
+import { useNavStore } from "@/store/useNavStore";
 import Image from "next/image";
 import Link from "next/link";
-
 import FocusLock from "react-focus-lock";
 
-type NavigationProps = {
-  isNavOpen: boolean;
-  toggleNav: () => void;
-};
-
-export default function Navigation({ isNavOpen, toggleNav }: NavigationProps) {
+export default function Navigation() {
+  const { isNavOpen } = useNavStore();
   return (
     <>
       {isNavOpen && (

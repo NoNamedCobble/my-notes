@@ -1,5 +1,5 @@
 "use client";
-import { getNotes } from "@/api/notes";
+import { getNotes } from "@/services/api/notes";
 import Note from "@/common/components/Note";
 import { NoteProps } from "@/common/types";
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +19,7 @@ export default function Notes({ searchValue }: NotesProps) {
     notes.filter(
       ({ title, content }) =>
         title.toLowerCase().includes(searchValue.toLowerCase()) ||
-        content.toLowerCase().includes(searchValue.toLowerCase()),
+        content.toLowerCase().includes(searchValue.toLowerCase())
     );
 
   return (

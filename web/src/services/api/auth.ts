@@ -1,4 +1,4 @@
-import { api } from "@/api/instance";
+import { api } from "@/services/api/instance";
 import { LoginData, SignupData } from "@/common/types";
 
 export async function login(data: LoginData) {
