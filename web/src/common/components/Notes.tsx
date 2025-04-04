@@ -4,16 +4,15 @@ import Note from "@/common/components/Note";
 import { NoteProps } from "@/common/types";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence } from "framer-motion";
+import { useSearchStore } from "@/store/useSearchStore";
 
-type NotesProps = {
-  searchValue: string;
-};
-
-export default function Notes({ searchValue }: NotesProps) {
+export default function Notes() {
   const { data, error, isLoading } = useQuery({
     queryKey: ["notes"],
     queryFn: () => getNotes(),
   });
+
+  const { searchValue } = useSearchStore();
 
   const filteredNotes = (notes: NoteProps[]) =>
     notes.filter(
