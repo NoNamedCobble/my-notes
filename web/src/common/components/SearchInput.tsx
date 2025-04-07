@@ -22,17 +22,18 @@ export default function SearchInput() {
   return (
     <div
       role="search"
-      className="relative h-14 w-full flex bg-secondary px-4 py-1 rounded-full  gap-2"
+      className="relative h-13 w-full flex bg-secondary px-4 py-1 rounded-full  gap-2"
     >
       <Image
         src="images/search.svg"
         alt="Search input"
+        className="opacity-50"
         width={20}
         height={20}
       />
       <input
         type="text"
-        className="h-full w-full bg-transparent"
+        className="h-full w-full bg-transparent text-lg"
         placeholder={placeholder}
         aria-label="Search notes"
         onChange={(e) => setSearchValue(e.target.value)}

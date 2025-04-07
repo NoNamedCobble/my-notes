@@ -10,3 +10,8 @@ export async function signup(data: SignupData) {
   const response = await api.post("/users/signup", data);
   return response;
 }
+
+export async function logout() {
+  const response = await api.post("/users/logout");
+  return response;
+}
