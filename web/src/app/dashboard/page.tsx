@@ -6,8 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import SearchInput from "@/common/components/SearchInput";
+import { useModalStore } from "@/store/useModalStore";
+import NewNoteModal from "@/common/components/modals/NewNoteModal";
 
 export default function Dashboard() {
+  const { openModal } = useModalStore();
   return (
     <>
       <header className="sticky top-0 z-10 h-fit grid w-full grid-cols-4 grid-rows-2 items-center bg-primary p-2 lg:grid-cols-custom-dashboard-header lg:grid-rows-1 lg:gap-x-5">
@@ -22,7 +25,10 @@ export default function Dashboard() {
         </div>
         <div className="col-span-full flex w-full max-w-screen-sm justify-between gap-1 lg:col-span-1 lg:col-start-2">
           <SearchInput />
-          <button className="h-14 w-14 hover:scale-105 duration-75 active:translate-y-0.5">
+          <button
+            onClick={() => openModal()}
+            className="h-14 w-14 hover:scale-105 duration-75 active:translate-y-0.5"
+          >
             <Image
               src="images/add.svg"
               alt="add"
@@ -34,6 +40,7 @@ export default function Dashboard() {
         </div>
         <Navigation />
       </header>
+      <NewNoteModal />
       <Notes />
     </>
   );

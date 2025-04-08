@@ -1,7 +1,12 @@
 import { api } from "@/services/api/instance";
-import { NoteProps } from "@/common/types";
+import { NoteProps, NoteData } from "@/common/types";
 
 export async function getNotes(): Promise<NoteProps[]> {
   const response = await api.get<NoteProps[]>("/notes/");
+  return response.data;
+}
+
+export async function addNote(note: NoteData) {
+  const response = await api.post<NoteData>("/notes/", note);
   return response.data;
 }

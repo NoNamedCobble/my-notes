@@ -21,16 +21,13 @@ export default function FormInput({
   } = useController({ control, name });
   return (
     <div>
-      <label
-        htmlFor={name}
-        className="flex h-11 w-full rounded-full bg-input-gradient px-6 shadow-custom-blue"
-      >
+      <label className="relative flex items-center" htmlFor={name}>
         <Image
           src={iconSrc}
           alt={name}
           width="22"
           height="15"
-          className="w-6"
+          className="absolute ml-6 h-6 w-6"
         />
         <input
           id={name}
@@ -38,7 +35,7 @@ export default function FormInput({
           disabled={isSubmitting}
           {...control.register(name)}
           {...props}
-          className="mx-2 h-full w-full bg-transparent text-lg"
+          className="mx-2 h-11 w-full rounded-full bg-transparent bg-input-gradient pl-11 pr-2 text-lg shadow-custom-blue"
         />
       </label>
       <AnimatePresence>
@@ -48,7 +45,7 @@ export default function FormInput({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="mt-1 ml-10 text-red-700"
+            className="ml-10 mt-1 text-red-700"
             role="alert"
             aria-live="assertive"
           >

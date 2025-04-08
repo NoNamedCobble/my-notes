@@ -14,3 +14,9 @@ export const loginSchema = z.object({
 export const signupSchema = loginSchema.extend({
   nickname: z.string().min(1, "Username is required."),
 });
+
+export const noteSchema = z.object({
+  title: z.string().min(1, "Title is required."),
+  content: z.string().min(1, "Content is required."),
+  background: z.string(),
+});
