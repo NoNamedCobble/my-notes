@@ -16,7 +16,7 @@ export default function SubmitButton({
     <button
       type="submit"
       disabled={isSubmitting}
-      className="flex h-12 w-fit min-w-36 items-center justify-center self-center rounded-full bg-primary text-xl text-secondary duration-200 hover:scale-105 hover:bg-quaternary active:translate-y-0.5 disabled:pointer-events-none md:text-2xl"
+      className="flex h-12 w-fit min-w-36 px-4 items-center justify-center self-center rounded-full bg-primary text-xl text-secondary duration-200 hover:scale-105 hover:bg-quaternary active:translate-y-0.5 disabled:pointer-events-none md:text-2xl"
       {...props}
     >
       <AnimatePresence>

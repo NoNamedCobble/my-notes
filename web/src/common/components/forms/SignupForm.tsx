@@ -23,7 +23,7 @@ export default function SignupForm() {
   const onSubmit: SubmitHandler<SignupData> = async (data) => {
     try {
       const response = await signup(data);
-      router.push("/dashboard");
+      router.push("/login");
     } catch (error: any) {
       console.log(error);
       const message = error.response?.data?.message ?? "Something went wrong.";

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 import SearchInput from "@/common/components/SearchInput";
 import { useModalStore } from "@/store/useModalStore";
-import NewNoteModal from "@/common/components/modals/NewNoteModal";
+import NewNoteModal from "@/common/components/modals/NoteModal";
 
 export default function Dashboard() {
   const { openModal } = useModalStore();

@@ -14,6 +14,7 @@ export interface NoteProps {
   _id: string;
   title: string;
   content: string;
+  background?: string;
 }
 
 export interface LayoutProps {

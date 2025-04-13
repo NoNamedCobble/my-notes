@@ -7,6 +7,11 @@ export async function getNotes(): Promise<NoteProps[]> {
 }
 
 export async function addNote(note: NoteData) {
-  const response = await api.post<NoteData>("/notes/", note);
+  const response = await api.post("/notes/", note);
+  return response.data;
+}
+
+export async function updateNote(note: NoteProps) {
+  const response = await api.put(`/notes/${note._id}`, note);
   return response.data;
 }
