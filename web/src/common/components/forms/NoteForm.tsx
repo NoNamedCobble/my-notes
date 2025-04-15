@@ -9,9 +9,12 @@ import { useModalStore } from "@/store/useModalStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
+import FormTextArea from "@/common/components/FormTextArea";
+import { useMemo } from "react";
 
 export default function NoteForm() {
   const { closeModal, currentNote } = useModalStore();
+  const isEditMode = useMemo(() => Boolean(currentNote), []);
   const { control, handleSubmit, reset, formState } = useForm<NoteData>({
     shouldUnregister: true,
     resolver: zodResolver(noteSchema),
@@ -24,8 +27,8 @@ export default function NoteForm() {
   });
   const { isSubmitting } = formState;
   const formLabels = {
-    heading: currentNote ? "Edit your note" : "Create new note",
-    submit: currentNote ? "Save changes" : "Create",
+    heading: isEditMode ? "Edit your note" : "Create new note",
+    submit: isEditMode ? "Save changes" : "Create",
   };
 
   const handleStopPropagation = (e: React.MouseEvent) => {
@@ -56,7 +59,8 @@ export default function NoteForm() {
   });
 
   const onSubmit: SubmitHandler<NoteData> = async (data) => {
-    if (currentNote) {
+    if (isEditMode) {
+      if (!currentNote) return;
       updateNoteMutation.mutate({ _id: currentNote._id, ...data });
     } else {
       addNoteMutation.mutate(data);
@@ -84,18 +88,21 @@ export default function NoteForm() {
         <span className="absolute h-0.5 w-3/4 -rotate-45 bg-primary"></span>
       </button>
       <FormInput
-        iconSrc="images/person.svg"
+        iconSrc="images/title.svg"
         name="title"
         control={control}
         placeholder="Title"
       />
-      <FormInput
-        iconSrc="images/person.svg"
-        name="content"
-        control={control}
-        placeholder="Content"
-      />
-      <FormColorPicker control={control} name="background" />
+      <div className="w-full flex flex-row gap-4">
+        <FormTextArea
+          iconSrc="images/content.svg"
+          name="content"
+          control={control}
+          placeholder="Content"
+          className="h-full"
+        />
+        <FormColorPicker control={control} name="background" />
+      </div>
       <SubmitButton isSubmitting={isSubmitting} title={formLabels.submit} />
     </form>
   );
