@@ -11,7 +11,9 @@ export const createNote = async (req, res) => {
   try {
     const newNote = new Note({ title, content, userId, background });
     await newNote.save();
-    res.status(StatusCodes.CREATED).json({ message: "Note created successfully.", note: newNote });
+    res
+      .status(StatusCodes.CREATED)
+      .json({ message: "Note created successfully.", note: { _id: newNote._id, title, content, background } });
   } catch (error) {
     console.error("CreateNoteError: ", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error. Please try again later." });
@@ -59,7 +61,7 @@ export const updateNoteById = async (req, res) => {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Note not found." });
     }
 
-    res.status(StatusCodes.OK).json({ message: "Note updated successfully.", updatedNote });
+    res.status(StatusCodes.OK).json({ message: "Note updated successfully.", note: updatedNote });
   } catch (error) {
     console.error("UpdateNoteById: ", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error. Please try again later." });
@@ -75,7 +77,7 @@ export const deleteNoteById = async (req, res) => {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Note not found." });
     }
 
-    res.status(StatusCodes.OK).json({ message: "Note deleted successfully.", deletedNote });
+    res.status(StatusCodes.OK).json({ message: "Note deleted successfully.", note: deletedNote });
   } catch (error) {
     console.error("DelteNoteById: ", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error. Please try again later." });
