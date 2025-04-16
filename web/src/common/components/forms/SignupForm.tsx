@@ -1,9 +1,9 @@
 "use client";
-import { signup } from "@/services/api/auth";
 import FormInput from "@/common/components/FormInput";
 import SubmitButton from "@/common/components/SubmitButton";
 import { signupSchema } from "@/common/schemas";
 import { SignupData } from "@/common/types";
+import { signup } from "@/services/api/auth";
 import { usePopupStore } from "@/store/usePopupStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -25,7 +25,6 @@ export default function SignupForm() {
       const response = await signup(data);
       router.push("/login");
     } catch (error: any) {
-      console.log(error);
       const message = error.response?.data?.message ?? "Something went wrong.";
       openPopup(message);
       reset();

@@ -1,8 +1,8 @@
 "use client";
-import { NoteProps } from "@/common/types";
-import { motion } from "framer-motion";
+import { Note } from "@/common/types";
 import { useModalStore } from "@/store/useModalStore";
 import chroma from "chroma-js";
+import { motion } from "framer-motion";
 
 const getBestTextColor = (bgColor: string) => {
   const contrastWithBlack = chroma.contrast(bgColor, "black");
@@ -11,12 +11,12 @@ const getBestTextColor = (bgColor: string) => {
   return contrastWithBlack > contrastWithWhite ? "black" : "white";
 };
 
-export default function Note({
+export default function NoteCard({
   _id,
   title,
   content,
   background = "#ffffff",
-}: NoteProps) {
+}: Note) {
   const { openEditModal } = useModalStore();
 
   const handleClick = () => {
@@ -34,7 +34,7 @@ export default function Note({
         backgroundColor: background,
         color: getBestTextColor(background),
       }}
-      className="shadow-custom-note relative h-fit min-h-40 break-words rounded-lg p-3"
+      className="relative h-fit min-h-40 break-words rounded-lg p-3 shadow-custom-note"
     >
       <h2 className="text-2xl font-medium uppercase">{title}</h2>
       <p className="p-0.5">{content}</p>

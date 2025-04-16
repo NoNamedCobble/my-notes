@@ -1,17 +1,27 @@
+import { Note, NoteWithoutId } from "@/common/types";
 import { api } from "@/services/api/instance";
-import { NoteProps, NoteData } from "@/common/types";
 
-export async function getNotes(): Promise<NoteProps[]> {
-  const response = await api.get<NoteProps[]>("/notes/");
+interface ApiResponse<T> {
+  message: string;
+  note: T;
+}
+
+export async function fetchNotes() {
+  const response = await api.get<Note[]>("/notes/");
   return response.data;
 }
 
-export async function addNote(note: NoteData) {
-  const response = await api.post("/notes/", note);
+export async function createNote(note: NoteWithoutId) {
+  const response = await api.post<ApiResponse<Note>>("/notes/", note);
   return response.data;
 }
 
-export async function updateNote(note: NoteProps) {
-  const response = await api.put(`/notes/${note._id}`, note);
+export async function updateNote(note: Note) {
+  const response = await api.put<ApiResponse<Note>>(`/notes/${note._id}`, note);
+  return response.data;
+}
+
+export async function deleteNote(note: Note) {
+  const response = await api.delete<ApiResponse<Note>>(`/notes/${note._id}`);
   return response.data;
 }

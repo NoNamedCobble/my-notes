@@ -1,24 +1,21 @@
 "use client";
-import { getNotes } from "@/services/api/notes";
-import Note from "@/common/components/Note";
-import { NoteProps } from "@/common/types";
-import { useQuery } from "@tanstack/react-query";
-import { AnimatePresence } from "framer-motion";
+import NoteCard from "@/common/components/NoteCard";
+import { useNotes } from "@/common/hooks/useNotes";
+import { Note } from "@/common/types";
 import { useSearchStore } from "@/store/useSearchStore";
+import { AnimatePresence } from "framer-motion";
 
-export default function Notes() {
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["notes"],
-    queryFn: () => getNotes(),
-  });
-
+export default function NoteCardsList() {
+  const { notesQuery } = useNotes();
   const { searchValue } = useSearchStore();
 
-  const filteredNotes = (notes: NoteProps[]) =>
+  const { data, error, isLoading } = notesQuery();
+
+  const filteredNotes = (notes: Note[]) =>
     notes.filter(
       ({ title, content }) =>
         title.toLowerCase().includes(searchValue.toLowerCase()) ||
-        content.toLowerCase().includes(searchValue.toLowerCase())
+        content.toLowerCase().includes(searchValue.toLowerCase()),
     );
 
   return (
@@ -26,7 +23,7 @@ export default function Notes() {
       <AnimatePresence>
         {data &&
           filteredNotes(data).map(({ _id, title, content, background }) => (
-            <Note
+            <NoteCard
               key={_id}
               _id={_id}
               title={title}
