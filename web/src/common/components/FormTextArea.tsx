@@ -1,6 +1,5 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import { ComponentProps } from "react";
 import { Control, useController } from "react-hook-form";
 
@@ -20,7 +19,7 @@ export default function FormInput({
     formState: { errors, isSubmitting },
   } = useController({ control, name });
   return (
-    <div className="w-full h-fit">
+    <div className="relative w-3/5 px-2">
       <label htmlFor={name}>
         <textarea
           id={name}
@@ -28,7 +27,7 @@ export default function FormInput({
           disabled={isSubmitting}
           {...control.register(name)}
           {...props}
-          className="mx-2 w-full h-[240px] rounded-2xl  bg-transparent bg-input-gradient p-4 pr-2 text-lg shadow-custom-blue resize-none"
+          className="h-52 w-full resize-none rounded-2xl bg-transparent bg-input-gradient p-3 pr-2 text-lg shadow-custom-blue"
         ></textarea>
       </label>
       <AnimatePresence>

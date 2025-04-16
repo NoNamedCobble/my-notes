@@ -1,8 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import { HexColorPicker, HexColorInput } from "react-colorful";
-import { Control, useController, Controller } from "react-hook-form";
 import { ComponentProps } from "react";
+import { HexColorInput, HexColorPicker } from "react-colorful";
+import { Control, Controller } from "react-hook-form";
 
 type FormColorPickerProps = ComponentProps<typeof HexColorPicker> & {
   control: Control<any>;
@@ -20,9 +19,10 @@ export default function FormColorPicker({
         name={name}
         control={control}
         render={({ field }) => (
-          <div className="flex flex-col gap-2">
+          <div className="flex h-52 w-2/5 flex-col gap-2">
             <HexColorPicker
               {...props}
+              className="!h-full !w-full"
               color={field.value}
               onChange={(color) => field.onChange(color)}
             />
@@ -30,7 +30,7 @@ export default function FormColorPicker({
               color={field.value}
               onChange={(color) => field.onChange(color)}
               prefixed
-              className="px-2 py-1 rounded-lg bg-input-gradient shadow-custom-blue"
+              className="rounded-lg bg-input-gradient px-2 py-1 shadow-custom-blue"
             />
           </div>
         )}

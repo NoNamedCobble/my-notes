@@ -54,7 +54,7 @@ export default function NoteForm() {
       onClick={(e) => handleStopPropagation(e)}
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="relative flex h-4/5 min-h-fit w-full max-w-xl flex-col gap-4 rounded-xl bg-secondary p-8 md:h-fit"
+      className="relative flex h-5/6 min-h-fit w-full max-w-xl flex-col gap-4 rounded-xl bg-secondary px-3 pt-4 shadow-custom-blue md:h-fit md:p-8"
     >
       <h2 className="text-3xl text-primary">{formLabels.heading}</h2>
       <button
@@ -72,13 +72,12 @@ export default function NoteForm() {
         control={control}
         placeholder="Title"
       />
-      <div className="flex w-full flex-row gap-4">
+      <div className="relative flex md:gap-2">
         <FormTextArea
           iconSrc="images/content.svg"
           name="content"
           control={control}
           placeholder="Content"
-          className="h-full"
         />
         <FormColorPicker control={control} name="background" />
       </div>
