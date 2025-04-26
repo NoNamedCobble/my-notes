@@ -26,7 +26,7 @@ export default function DashboardHeader() {
         >
           <Image
             src="images/add.svg"
-            alt="add"
+            alt="create note"
             width={45}
             height={45}
             className="h-full w-full"

@@ -36,7 +36,7 @@ export const useNotes = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (note: Note) => deleteNote(note),
+    mutationFn: (id: string) => deleteNote(id),
     onSuccess: (response) => {
       const { _id } = response.note;
       queryClient.setQueryData(["notes"], (oldNotes: Note[]) => {

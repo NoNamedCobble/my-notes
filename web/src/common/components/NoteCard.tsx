@@ -1,15 +1,10 @@
 "use client";
+import NoteCardDropdown from "@/common/components/NoteCardDropdown";
+import { useNotes } from "@/common/hooks/useNotes";
 import { Note } from "@/common/types";
+import { getBestColor } from "@/common/utils";
 import { useModalStore } from "@/store/useModalStore";
-import chroma from "chroma-js";
 import { motion } from "framer-motion";
-
-const getBestTextColor = (bgColor: string) => {
-  const contrastWithBlack = chroma.contrast(bgColor, "black");
-  const contrastWithWhite = chroma.contrast(bgColor, "white");
-
-  return contrastWithBlack > contrastWithWhite ? "black" : "white";
-};
 
 export default function NoteCard({
   _id,
@@ -18,10 +13,17 @@ export default function NoteCard({
   background = "#ffffff",
 }: Note) {
   const { openEditModal } = useModalStore();
+  const { deleteNote } = useNotes();
 
-  const handleClick = () => {
-    openEditModal({ _id, title, content, background });
-  };
+  const options = [
+    {
+      label: "Edit",
+      onClick: () => openEditModal({ _id, title, content, background }),
+    },
+    { label: "Delete", onClick: () => deleteNote(_id) },
+  ];
+
+  const bestColor = getBestColor(background);
 
   return (
     <motion.article
@@ -29,13 +31,14 @@ export default function NoteCard({
       animate={{ opacity: 1, y: "0" }}
       exit={{ opacity: 0, y: "10%" }}
       transition={{ duration: 0.15 }}
-      onClick={handleClick}
       style={{
         backgroundColor: background,
-        color: getBestTextColor(background),
+        fill: bestColor,
+        color: bestColor,
       }}
-      className="relative h-fit min-h-40 break-words rounded-lg p-3 shadow-custom-note"
+      className="relative min-h-40 break-words rounded-lg p-3 shadow-custom-note"
     >
+      <NoteCardDropdown options={options} />
       <h2 className="text-2xl font-medium uppercase">{title}</h2>
       <p className="p-0.5">{content}</p>
     </motion.article>
