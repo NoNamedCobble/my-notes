@@ -22,9 +22,25 @@ export const createNote = async (req, res) => {
 
 export const getNotes = async (req, res) => {
   const { userId } = req;
+  const { page = 1, search = "" } = req.query;
+  const pageSize = 10;
+
+  const query = {
+    userId,
+    $or: [{ title: { $regex: search, $options: "i" } }, { content: { $regex: search, $options: "i" } }],
+  };
+
   try {
-    const notes = await Note.find({ userId }).select("title content background");
-    res.status(StatusCodes.OK).json(notes);
+    const notes = await Note.find(query)
+      .select("title content background")
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
+    const totalNotes = await Note.countDocuments(query);
+    const hasNextPage = page * pageSize < totalNotes;
+    const nextPage = hasNextPage ? Number(page) + 1 : null;
+
+    res.status(StatusCodes.OK).json({ nextPage, notes });
   } catch (error) {
     console.error("GetNoteError: ", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error. Please try again later." });
