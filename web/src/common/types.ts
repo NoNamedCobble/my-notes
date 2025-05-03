@@ -17,3 +17,8 @@ export interface Position {
 export interface LayoutProps {
   children: React.ReactNode;
 }
+
+export interface PaginatedNotes {
+  nextPage: number | null;
+  notes: Note[];
+}

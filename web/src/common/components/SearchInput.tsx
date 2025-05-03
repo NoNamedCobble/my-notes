@@ -1,21 +1,17 @@
 import { useSearchStore } from "@/store/useSearchStore";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
 
+const DELAY = 400;
 export default function SearchInput() {
-  const { searchValue, setSearchValue } = useSearchStore();
-  const [placeholder, setPlaceholder] = useState("Search notes...");
+  const { setSearchValue } = useSearchStore();
+  const [inputValue, setInputValue] = useState("");
+  const [debouncedValue] = useDebounce(inputValue, DELAY);
 
-  const placeholders = [
-    "Write your note here...",
-    "What's on your mind?",
-    "Add a new note...",
-    "Thoughts for today...",
-    "Take a note...",
-    "What's the plan?",
-    "Quick reminder...",
-    "Search notes...",
-  ];
+  useEffect(() => {
+    setSearchValue(debouncedValue);
+  }, [debouncedValue, setSearchValue]);
 
   return (
     <div role="search" className="flex w-full items-center">
@@ -29,10 +25,10 @@ export default function SearchInput() {
       <input
         type="search"
         className="h-full w-full rounded-full bg-secondary px-10 text-lg"
-        placeholder={placeholder}
+        placeholder="Search notes..."
         aria-label="Search notes"
-        onChange={(e) => setSearchValue(e.target.value)}
-        value={searchValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        value={inputValue}
       />
     </div>
   );

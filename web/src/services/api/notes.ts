@@ -1,4 +1,4 @@
-import { Note, NoteWithoutId } from "@/common/types";
+import { Note, NoteWithoutId, PaginatedNotes } from "@/common/types";
 import { api } from "@/services/api/instance";
 
 interface ApiResponse<T> {
@@ -6,8 +6,17 @@ interface ApiResponse<T> {
   note: T;
 }
 
-export async function fetchNotes() {
-  const response = await api.get<Note[]>("/notes/");
+type FetchNotesProps = {
+  pageParam: number;
+  searchValue: string;
+};
+export async function fetchNotes({
+  pageParam = 1,
+  searchValue = "",
+}: FetchNotesProps) {
+  const response = await api.get<PaginatedNotes>(
+    `/notes?page=${pageParam}&search=${searchValue}`,
+  );
   return response.data;
 }
 

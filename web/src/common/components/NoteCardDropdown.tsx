@@ -18,6 +18,7 @@ export default function NoteCardDropdown({ options }: NoteCardDropdownProps) {
     <div className="relative float-right h-10 w-10">
       <button
         onClick={toggle}
+        aria-label={isOpen ? "Close more options" : "Open more options"}
         aria-haspopup="true"
         aria-expanded={isOpen}
         className="h-full w-full rounded-md bg-secondary bg-opacity-0 p-2 duration-75 hover:bg-opacity-20"
