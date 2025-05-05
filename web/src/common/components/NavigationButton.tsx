@@ -1,14 +1,21 @@
 "use client";
-import { useNavStore } from "@/store/useNavStore";
 import { motion } from "framer-motion";
 import FocusLock from "react-focus-lock";
 
-export default function NavigationButton() {
-  const { isNavOpen, toggleNav } = useNavStore();
+type NavigationButtonProps = {
+  isNavOpen: boolean;
+  toggleNav: () => void;
+};
+
+export default function NavigationButton({
+  isNavOpen,
+  toggleNav,
+}: NavigationButtonProps) {
   const burgerSpanTransition = {
     y: { delay: isNavOpen ? 0 : 0.1, duration: 0.1 },
     rotate: { delay: isNavOpen ? 0.1 : 0, duration: 0.1 },
   };
+
   return (
     <FocusLock group="navigation" disabled={!isNavOpen}>
       <button

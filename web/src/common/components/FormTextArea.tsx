@@ -1,7 +1,7 @@
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
 import { ComponentProps } from "react";
 import { Control, useController } from "react-hook-form";
+import FormErrorMessage from "@/common/components/FormErrorMessage";
 
 type FormInputProps = ComponentProps<"textarea"> & {
   control: Control<any>;
@@ -30,21 +30,7 @@ export default function FormInput({
           className="h-52 w-full resize-none rounded-2xl bg-transparent bg-input-gradient p-3 pr-2 text-lg shadow-custom-blue"
         ></textarea>
       </label>
-      <AnimatePresence>
-        {errors[name] && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="ml-10 mt-1 text-red-700"
-            role="alert"
-            aria-live="assertive"
-          >
-            {errors[name].message?.toString()}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      <FormErrorMessage errors={errors} name={name} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Note } from "@/common/types";
 import { create } from "zustand";
 
-interface ModalStore {
+interface NoteModalStore {
   isOpen: boolean;
   currentNote: Note | null;
   openModal: () => void;
@@ -9,7 +9,7 @@ interface ModalStore {
   closeModal: () => void;
 }
 
-export const useModalStore = create<ModalStore>((set) => ({
+export const useNoteModalStore = create<NoteModalStore>((set) => ({
   isOpen: false,
   currentNote: null,
   openModal: () => set({ isOpen: true }),

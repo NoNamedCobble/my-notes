@@ -1,11 +1,11 @@
 "use client";
 import NoteForm from "@/common/components/forms/NoteForm";
-import { useModalStore } from "@/store/useModalStore";
+import { useNoteModalStore } from "@/store/useNoteModalStore";
 import { AnimatePresence, motion } from "framer-motion";
 import FocusLock from "react-focus-lock";
 
 export default function NewNoteModal() {
-  const { isOpen, closeModal } = useModalStore();
+  const { isOpen, closeModal } = useNoteModalStore();
 
   return (
     <AnimatePresence>

@@ -1,4 +1,3 @@
-import { useNavStore } from "@/store/useNavStore";
 import Image from "next/image";
 import Link from "next/link";
 import FocusLock from "react-focus-lock";
@@ -6,12 +5,13 @@ import { logout } from "@/services/api/auth";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function Navigation() {
-  const { isNavOpen } = useNavStore();
+type NavigationProps = {
+  isNavOpen: boolean;
+};
+export default function Navigation({ isNavOpen }: NavigationProps) {
   const router = useRouter();
 
   const handleLogout = async () => {
-    console.log("logout");
     try {
       await logout();
       router.push("/login");

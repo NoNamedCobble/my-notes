@@ -6,13 +6,13 @@ import SubmitButton from "@/common/components/SubmitButton";
 import { useNotes } from "@/common/hooks/useNotes";
 import { noteSchema } from "@/common/schemas";
 import { NoteWithoutId } from "@/common/types";
-import { useModalStore } from "@/store/useModalStore";
+import { useNoteModalStore } from "@/store/useNoteModalStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 export default function NoteForm() {
-  const { closeModal, currentNote } = useModalStore();
+  const { closeModal, currentNote } = useNoteModalStore();
   const isEditMode = useMemo(() => Boolean(currentNote), []);
   const { control, handleSubmit, reset, formState } = useForm<NoteWithoutId>({
     shouldUnregister: true,

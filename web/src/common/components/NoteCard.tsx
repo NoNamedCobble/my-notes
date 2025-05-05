@@ -3,7 +3,7 @@ import NoteCardDropdown from "@/common/components/NoteCardDropdown";
 import { useNotes } from "@/common/hooks/useNotes";
 import { Note } from "@/common/types";
 import { getBestColor } from "@/common/utils";
-import { useModalStore } from "@/store/useModalStore";
+import { useNoteModalStore } from "@/store/useNoteModalStore";
 import { motion } from "framer-motion";
 
 export default function NoteCard({
@@ -12,7 +12,7 @@ export default function NoteCard({
   content,
   background = "#ffffff",
 }: Note) {
-  const { openEditModal } = useModalStore();
+  const { openEditModal } = useNoteModalStore();
   const { deleteNote } = useNotes();
 
   const options = [
