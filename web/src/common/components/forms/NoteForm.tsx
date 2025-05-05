@@ -4,6 +4,7 @@ import FormInput from "@/common/components/FormInput";
 import FormTextArea from "@/common/components/FormTextArea";
 import SubmitButton from "@/common/components/SubmitButton";
 import { useNotes } from "@/common/hooks/useNotes";
+import { useOutsideClick } from "@/common/hooks/useOutsideClick";
 import { noteSchema } from "@/common/schemas";
 import { NoteWithoutId } from "@/common/types";
 import { useNoteModalStore } from "@/store/useNoteModalStore";
@@ -31,10 +32,7 @@ export default function NoteForm() {
   };
 
   const { createNote, updateNote } = useNotes();
-
-  const handleStopPropagation = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
+  const ref = useOutsideClick<HTMLFormElement>(closeModal);
 
   const onSubmit: SubmitHandler<NoteWithoutId> = async (data) => {
     if (isEditMode) {
@@ -51,7 +49,7 @@ export default function NoteForm() {
 
   return (
     <form
-      onClick={(e) => handleStopPropagation(e)}
+      ref={ref}
       onSubmit={handleSubmit(onSubmit)}
       noValidate
       className="relative flex h-5/6 min-h-fit w-full max-w-xl flex-col gap-4 rounded-xl bg-secondary px-3 pt-4 shadow-custom-blue md:h-fit md:p-8"

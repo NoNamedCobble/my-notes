@@ -30,7 +30,7 @@ export default function NoteCardsList() {
       <AnimatePresence>
         {data &&
           data.pages.map(({ notes }) =>
-            notes.map((note: Note) => <NoteCard key={note._id} {...note} />),
+            notes.map((note: Note) => <NoteCard key={note._id} {...note} />)
           )}
       </AnimatePresence>
       <div ref={ref}></div>
