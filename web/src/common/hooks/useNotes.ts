@@ -12,9 +12,9 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 type NotesInfinityData = InfiniteData<PaginatedNotes>;
-
 export const useNotes = () => {
   const queryClient = useQueryClient();
   const { searchValue } = useSearchStore();
@@ -29,6 +29,9 @@ export const useNotes = () => {
 
   const createMutation = useMutation({
     mutationFn: (note: NoteWithoutId) => createNote(note),
+    onError: () => {
+      toast.error("Failed to add note. Please try again.");
+    },
     onSuccess: ({ note }) => {
       queryClient.setQueryData<NotesInfinityData>(
         ["notes", searchValue],
@@ -49,13 +52,18 @@ export const useNotes = () => {
               ],
             };
           }
-        },
+        }
       );
+
+      toast.success("Note added successfully!");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: (note: Note) => updateNote(note),
+    onError: () => {
+      toast.error("Failed to update note. Please try again.");
+    },
     onSuccess: ({ note }) => {
       queryClient.setQueryData<NotesInfinityData>(
         ["notes", searchValue],
@@ -65,7 +73,7 @@ export const useNotes = () => {
           const updatedPages = oldData.pages.map((page) => ({
             ...page,
             notes: page.notes.map((oldNote) =>
-              oldNote._id === note._id ? note : oldNote,
+              oldNote._id === note._id ? note : oldNote
             ),
           }));
 
@@ -73,13 +81,18 @@ export const useNotes = () => {
             ...oldData,
             pages: updatedPages,
           };
-        },
+        }
       );
+
+      toast.success("Note updated successfully!");
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteNote(id),
+    onError: () => {
+      toast.error("Failed to delete note. Please try again.");
+    },
     onSuccess: ({ note }) => {
       queryClient.setQueryData<NotesInfinityData>(
         ["notes", searchValue],
@@ -95,8 +108,10 @@ export const useNotes = () => {
             ...oldData,
             pages: updatedPages,
           };
-        },
+        }
       );
+
+      toast.success("Note deleted successfully!");
     },
   });
 

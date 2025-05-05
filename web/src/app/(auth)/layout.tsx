@@ -2,10 +2,20 @@ import Dots from "@/common/components/Dots";
 import { LayoutProps } from "@/common/types";
 import Image from "next/image";
 import Link from "next/link";
+import { ToastContainer } from "react-toastify";
 
 export default function AuthLayout({ children }: LayoutProps) {
   return (
     <div className="relative flex h-dvh min-h-fit flex-col justify-end gap-4 bg-custom-waves bg-cover bg-bottom bg-no-repeat lg:landscape:items-center lg:landscape:justify-center">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        newestOnTop
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <header className="my-auto p-4 text-secondary lg:landscape:absolute lg:landscape:left-0 lg:landscape:top-0 lg:landscape:p-5">
         <Link href="/">
           <h1 className="inline-block text-4xl md:text-5xl">

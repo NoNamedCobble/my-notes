@@ -23,7 +23,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <WarningPopup />
       <body className={`${jost.className} mx-auto max-w-[1920px] bg-primary`}>
         <QueryProvider>{children}</QueryProvider>
       </body>

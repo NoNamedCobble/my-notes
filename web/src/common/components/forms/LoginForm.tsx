@@ -4,21 +4,19 @@ import FormInput from "@/common/components/FormInput";
 import SubmitButton from "@/common/components/SubmitButton";
 import { loginSchema } from "@/common/schemas";
 import { LoginData } from "@/common/types";
-import { usePopupStore } from "@/store/usePopupStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export default function LoginForm() {
   const router = useRouter();
-  const { control, handleSubmit, reset, setError, formState } =
-    useForm<LoginData>({
-      resolver: zodResolver(loginSchema),
-      mode: "onSubmit",
-    });
+  const { control, handleSubmit, reset, formState } = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onSubmit",
+  });
   const { isSubmitting } = formState;
-  const { openPopup } = usePopupStore();
 
   const onSubmit: SubmitHandler<LoginData> = async (data) => {
     try {
@@ -26,7 +24,7 @@ export default function LoginForm() {
       router.push("/dashboard");
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Something went wrong.";
-      openPopup(message);
+      toast.error(message);
       reset();
     }
   };

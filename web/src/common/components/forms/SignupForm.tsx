@@ -4,29 +4,30 @@ import SubmitButton from "@/common/components/SubmitButton";
 import { signupSchema } from "@/common/schemas";
 import { SignupData } from "@/common/types";
 import { signup } from "@/services/api/auth";
-import { usePopupStore } from "@/store/usePopupStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export default function SignupForm() {
   const router = useRouter();
-  const { control, handleSubmit, reset, setError, formState } =
-    useForm<SignupData>({
-      resolver: zodResolver(signupSchema),
-      mode: "onSubmit",
-    });
+  const { control, handleSubmit, reset, formState } = useForm<SignupData>({
+    resolver: zodResolver(signupSchema),
+    mode: "onSubmit",
+  });
   const { isSubmitting } = formState;
-  const { openPopup } = usePopupStore();
 
   const onSubmit: SubmitHandler<SignupData> = async (data) => {
     try {
       const response = await signup(data);
+      toast.success(
+        "Registration successful! You can now log in to your account."
+      );
       router.push("/login");
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Something went wrong.";
-      openPopup(message);
+      toast.error(message);
       reset();
     }
   };
