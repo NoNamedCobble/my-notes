@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer";
-import { generateVerificationToken } from "../utils/jwtUtils.js";
+import {
+  generateEmailVerificationToken,
+  generatePasswordResetToken,
+} from "../utils/jwtUtils.js";
 
 const sendMail = async ({ to, subject, html }) => {
   const mailOptions = {
@@ -23,10 +26,10 @@ const sendMail = async ({ to, subject, html }) => {
 };
 
 export const sendEmailVerificationLink = ({ email, nickname, _id }) => {
-  const verificationToken = generateVerificationToken({
+  const token = generateEmailVerificationToken({
     _id,
   });
-  const verificationLink = `${process.env.FRONTEND_URL}/login?token=${verificationToken}`;
+  const link = `${process.env.FRONTEND_URL}/login?token=${token}`;
   const mailOptions = {
     to: email,
     subject: "Account Verification",
@@ -34,9 +37,31 @@ export const sendEmailVerificationLink = ({ email, nickname, _id }) => {
         <p>Hi, ${nickname}!</p>
         <p>Thank you for signing up for <strong>MyNotes</strong>! We're excited to have you join our community.</p>
         <p>To complete your registration, please verify your email address by clicking the link below:</p>
-        <p><a href="${verificationLink}">Verify My Email</a></p>
+        <p><a href="${link}">Verify My Email</a></p>
         <p>If you didn't sign up for an account with us, you can safely ignore this email.</p>
         <p>Best regards, <strong>My Notes Team</strong></p>
+    `,
+  };
+
+  sendMail(mailOptions);
+};
+
+export const sendPasswordResetLink = ({ email, nickname, _id }) => {
+  const token = generatePasswordResetToken({
+    _id,
+  });
+
+  const link = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+  const mailOptions = {
+    to: email,
+    subject: "Password Reset Request",
+    html: `
+      <p>Hi, ${nickname}!</p>
+      <p>We received a request to reset your password for your account on <strong>MyNotes</strong>.</p>
+      <p>To reset your password, please click the link below:</p>
+      <p><a href="${link}">Reset My Password</a></p>
+      <p>If you did not request a password reset, you can safely ignore this email.</p>
+      <p>Best regards, <strong>My Notes Team</strong></p>
     `,
   };
 

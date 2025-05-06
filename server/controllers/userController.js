@@ -1,12 +1,16 @@
 import { StatusCodes } from "http-status-codes";
 import User from "../models/User.js";
-import { sendEmailVerificationLink } from "../services/mailer.js";
+import {
+  sendEmailVerificationLink,
+  sendPasswordResetLink,
+} from "../services/mailer.js";
 
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
-  verifyVerificationToken,
+  verifyEmailVerificationToken,
+  verifyPasswordResetToken,
 } from "../utils/jwtUtils.js";
 
 export const createUser = async (req, res) => {
@@ -207,7 +211,7 @@ export const verifyEmail = async (req, res) => {
   }
 
   try {
-    const { _id } = verifyVerificationToken(token);
+    const { _id } = verifyEmailVerificationToken(token);
 
     const user = await User.findOneAndUpdate(
       { _id, isVerified: false },
@@ -227,6 +231,71 @@ export const verifyEmail = async (req, res) => {
       .json({ message: "Your account has been successfully verified." });
   } catch (error) {
     console.log("VerifyEmail: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
+  }
+};
+
+export const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Email is required." });
+  }
+
+  try {
+    const user = await User.findOne({ email, isVerified: true });
+    if (!user) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "User not found." });
+    }
+
+    const { _id, nickname } = user;
+    sendPasswordResetLink({ email, _id, nickname });
+
+    res.status(StatusCodes.OK).json({
+      message:
+        "Password reset request successful! Check your inbox for a reset linkCheck your inbox for a password reset link.",
+    });
+  } catch (error) {
+    console.log("RequestPasswordReset: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "All fields are required." });
+  }
+
+  try {
+    const { _id } = verifyPasswordResetToken(token);
+    const user = await User.findOne({ _id, isVerified: true });
+    if (!user) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "User not found." });
+    }
+
+    user.password = newPassword;
+
+    await user.save();
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Password successfully changed!" });
+  } catch (error) {
+    console.log("ResetPassword: ", error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Server error. Please try again later." });
