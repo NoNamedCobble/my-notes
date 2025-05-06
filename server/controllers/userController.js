@@ -17,7 +17,7 @@ export const createUser = async (req, res) => {
   }
 
   try {
-    const existingUser = await User.findOne({ $or: [{ email }, { nickname }] });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(StatusCodes.CONFLICT).json({
         message: "A user with this email or nickname already exists.",
@@ -149,5 +149,37 @@ export const refreshAccessToken = async (req, res, next) => {
     res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ message: "Invalid access token." });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  const { userId } = req;
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "All fields are required." });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user || !(await user.comparePassword(oldPassword))) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Old password is incorrect." });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Successfully password changed." });
+  } catch (error) {
+    console.log("ChangePasswordError: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
   }
 };
