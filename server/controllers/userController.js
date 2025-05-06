@@ -237,7 +237,7 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
-export const requestPasswordReset = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
   if (!email) {

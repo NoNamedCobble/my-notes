@@ -5,8 +5,8 @@ import {
   logout,
   changePassword,
   verifyEmail,
-  requestPasswordReset,
   resetPassword,
+  forgotPassword,
 } from "../controllers/userController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
@@ -22,7 +22,7 @@ router.post("/change-password", authMiddleware, changePassword);
 
 router.post("/verify-email", verifyEmail);
 
-router.post("/request-password-reset", requestPasswordReset);
+router.post("/forgot-password", forgotPassword);
 
 router.post("/reset-password", resetPassword);
 
