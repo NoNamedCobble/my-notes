@@ -259,7 +259,7 @@ export const forgotPassword = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
       message:
-        "Password reset request successful! Check your inbox for a reset linkCheck your inbox for a password reset link.",
+        "Password reset request successful! Check your inbox for a reset link.",
     });
   } catch (error) {
     console.log("RequestPasswordReset: ", error);
