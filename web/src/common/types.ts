@@ -1,4 +1,5 @@
 import {
+  forgotPassword,
   loginSchema,
   noteSchema,
   resetPasswordSchema,
@@ -6,6 +7,7 @@ import {
 } from "@/common/schemas";
 import { z } from "zod";
 
+export type ForgotPasswordData = z.infer<typeof forgotPassword>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type SignupData = z.infer<typeof signupSchema>;
 export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;

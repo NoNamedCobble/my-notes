@@ -64,6 +64,7 @@ export default function ResetPasswordForm() {
         placeholder="Confirm password"
         type="password"
       />
+      <SubmitButton isSubmitting={isSubmitting} title="Submit" />
       <p className="m-1 self-center text-base text-tertiary md:text-lg">
         Remember your password?
         <Link
@@ -73,7 +74,6 @@ export default function ResetPasswordForm() {
           Login
         </Link>
       </p>
-      <SubmitButton isSubmitting={isSubmitting} title="Submit" />
     </form>
   );
 }
