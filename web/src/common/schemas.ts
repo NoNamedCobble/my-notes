@@ -15,6 +15,22 @@ export const signupSchema = loginSchema.extend({
   nickname: z.string().min(1, "Username is required."),
 });
 
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(4, "Password must be at least 4 characters long.")
+      .max(50),
+    confirmNewPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords must match.",
+    path: ["confirmNewPassword"],
+  })
+  .transform((data) => ({
+    newPassword: data.newPassword,
+  }));
+
 export const noteSchema = z.object({
   title: z.string().min(1, "Title is required."),
   content: z.string().min(1, "Content is required."),

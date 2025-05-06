@@ -1,4 +1,4 @@
-import { LoginData, SignupData } from "@/common/types";
+import { LoginData, SignupData, ResetPasswordData } from "@/common/types";
 import { api } from "@/services/api/instance";
 
 interface ApiResponse {
@@ -24,5 +24,12 @@ export async function verifyEmail(token: string) {
   const response = await api.post<ApiResponse>("/users/verify-email", {
     token,
   });
+  return response.data;
+}
+
+export async function resetPassword(
+  data: ResetPasswordData & { token: string }
+) {
+  const response = await api.post<ApiResponse>("/users/reset-password", data);
   return response.data;
 }
