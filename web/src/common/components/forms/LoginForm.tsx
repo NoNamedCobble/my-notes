@@ -55,7 +55,7 @@ export default function LoginForm() {
         type="password"
       />
       <Link
-        href="/reset-password"
+        href="/forgot-password"
         className="relative block self-end text-base font-medium md:text-lg"
       >
         Forgot Password?

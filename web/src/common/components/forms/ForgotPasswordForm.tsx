@@ -33,12 +33,12 @@ export default function ForgotPasswordForm() {
 
   return (
     <form
-      className="relative mx-auto flex max-w-sm flex-col gap-5"
+      className="relative mx-auto flex max-w-sm flex-col gap-6"
       onSubmit={handleSubmit(onSubmit)}
       noValidate
     >
-      <h2 className="text-2xl font-semibold md:mb-5 md:text-3xl lg:self-center lg:text-4xl">
-        Login
+      <h2 className="text-2xl font-semibold md:text-3xl lg:self-center lg:text-3xl">
+        Recover your password
       </h2>
       <FormInput
         name="email"
@@ -47,14 +47,14 @@ export default function ForgotPasswordForm() {
         placeholder="Email"
         type="email"
       />
-      <SubmitButton isSubmitting={isSubmitting} title="Recover" />
+      <SubmitButton isSubmitting={isSubmitting} title="Continue" />
       <p className="m-1 self-center text-base text-tertiary md:text-lg">
-        Don't have account?
+        Don't need to recover?
         <Link
-          href="/signup"
+          href="/login"
           className="inline-block bg-custom-linkGradient bg-cover bg-center p-2 font-medium text-primary"
         >
-          Sign Up
+          Log in
         </Link>
       </p>
     </form>

@@ -61,7 +61,7 @@ export default function SignupForm() {
         iconSrc="images/password.svg"
       />
       <Link
-        href="/"
+        href="/forgot-password"
         className="mb-7 block self-end text-base font-medium md:text-lg"
       >
         Forgot Password?
