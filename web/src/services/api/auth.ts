@@ -19,3 +19,10 @@ export async function logout() {
   const response = await api.post<ApiResponse>("/users/logout");
   return response;
 }
+
+export async function verifyEmail(token: string) {
+  const response = await api.post<ApiResponse>("/users/verify-email", {
+    token,
+  });
+  return response.data;
+}

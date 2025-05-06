@@ -9,8 +9,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useVerifyEmailToken } from "@/common/hooks/useVerifyEmailToken";
 
 export default function LoginForm() {
+  useVerifyEmailToken();
   const router = useRouter();
   const { control, handleSubmit, reset, formState } = useForm<LoginData>({
     resolver: zodResolver(loginSchema),

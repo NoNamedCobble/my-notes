@@ -22,7 +22,7 @@ export default function SignupForm() {
     try {
       const response = await signup(data);
       toast.success(
-        "Registration successful! You can now log in to your account."
+        "Registration successful! Please check your email inbox and confirm your account"
       );
       router.push("/login");
     } catch (error: any) {
