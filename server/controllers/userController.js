@@ -1,10 +1,12 @@
 import { StatusCodes } from "http-status-codes";
 import User from "../models/User.js";
+import { sendEmailVerificationLink } from "../services/mailer.js";
 
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
+  verifyVerificationToken,
 } from "../utils/jwtUtils.js";
 
 export const createUser = async (req, res) => {
@@ -26,6 +28,9 @@ export const createUser = async (req, res) => {
 
     const newUser = new User({ email, nickname, password });
     await newUser.save();
+
+    sendEmailVerificationLink({ email, nickname, _id: newUser._id });
+
     res.status(StatusCodes.CREATED).json({ message: "User has been created." });
   } catch (error) {
     console.log("CreateUserError: ", error);
@@ -50,7 +55,15 @@ export const login = async (req, res) => {
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: "Invalid email or password." });
     }
-    const { _id } = user;
+
+    const { _id, nickname } = user;
+    if (!user.isVerified) {
+      sendEmailVerificationLink({ email, nickname, _id });
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Your account has not been verified. Please check your email.",
+      });
+    }
+
     const accessToken = generateAccessToken({ _id });
     const refreshToken = generateRefreshToken({ _id });
 
@@ -178,6 +191,42 @@ export const changePassword = async (req, res) => {
       .json({ message: "Successfully password changed." });
   } catch (error) {
     console.log("ChangePasswordError: ", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error. Please try again later." });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Token is required." });
+  }
+
+  try {
+    const { _id } = verifyVerificationToken(token);
+
+    const user = await User.findOneAndUpdate(
+      { _id, isVerified: false },
+      {
+        $set: { isVerified: true },
+      }
+    );
+
+    if (!user) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "User not found." });
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Your account has been successfully verified." });
+  } catch (error) {
+    console.log("VerifyEmail: ", error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Server error. Please try again later." });

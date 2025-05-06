@@ -26,6 +26,10 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestaps: true,
