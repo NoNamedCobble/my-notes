@@ -1,8 +1,12 @@
-import { Note, NoteWithoutId, PaginatedNotes } from "@/common/types";
+import {
+  ApiResponse,
+  Note,
+  NoteWithoutId,
+  PaginatedNotes,
+} from "@/common/types";
 import { api } from "@/services/api/instance";
 
-interface ApiResponse<T> {
-  message: string;
+interface NotesApiResponse<T> extends ApiResponse {
   note: T;
 }
 
@@ -21,16 +25,19 @@ export async function fetchNotes({
 }
 
 export async function createNote(note: NoteWithoutId) {
-  const response = await api.post<ApiResponse<Note>>("/notes/", note);
+  const response = await api.post<NotesApiResponse<Note>>("/notes/", note);
   return response.data;
 }
 
 export async function updateNote(note: Note) {
-  const response = await api.put<ApiResponse<Note>>(`/notes/${note._id}`, note);
+  const response = await api.put<NotesApiResponse<Note>>(
+    `/notes/${note._id}`,
+    note,
+  );
   return response.data;
 }
 
 export async function deleteNote(id: string) {
-  const response = await api.delete<ApiResponse<Note>>(`/notes/${id}`);
+  const response = await api.delete<NotesApiResponse<Note>>(`/notes/${id}`);
   return response.data;
 }

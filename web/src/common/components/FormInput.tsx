@@ -1,14 +1,9 @@
 "use client";
-import Image from "next/image";
-import { ComponentProps } from "react";
-import { Control, useController } from "react-hook-form";
 import FormErrorMessage from "@/common/components/FormErrorMessage";
+import { FormInputProps } from "@/common/types";
+import Image from "next/image";
+import { useController } from "react-hook-form";
 
-type FormInputProps = ComponentProps<"input"> & {
-  control: Control<any>;
-  name: string;
-  iconSrc: string;
-};
 export default function FormInput({
   control,
   name,

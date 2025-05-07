@@ -1,13 +1,15 @@
 import {
-  forgotPassword,
+  forgotPasswordSchema,
   loginSchema,
   noteSchema,
   resetPasswordSchema,
   signupSchema,
 } from "@/common/schemas";
+import { ComponentProps } from "react";
+import { Control } from "react-hook-form";
 import { z } from "zod";
 
-export type ForgotPasswordData = z.infer<typeof forgotPassword>;
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type SignupData = z.infer<typeof signupSchema>;
 export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
@@ -29,4 +31,14 @@ export interface LayoutProps {
 export interface PaginatedNotes {
   nextPage: number | null;
   notes: Note[];
+}
+
+export interface FormInputProps extends ComponentProps<"input"> {
+  control: Control<any>;
+  name: string;
+  iconSrc: string;
+}
+
+export interface ApiResponse {
+  message: string;
 }

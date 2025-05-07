@@ -6,5 +6,17 @@ export const api = axios.create({
     "Content-Type": "application/json",
   },
   withCredentials: true,
-  timeout: 10000,
+  timeout: 5000,
 });
+
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (!error.response?.data) {
+      error.response = { data: { message: "Something went wrong." } };
+    }
+    return Promise.reject(error);
+  },
+);

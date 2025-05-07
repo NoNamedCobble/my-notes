@@ -1,81 +1,46 @@
 "use client";
-import FormInput from "@/common/components/FormInput";
-import SubmitButton from "@/common/components/SubmitButton";
 import { signupSchema } from "@/common/schemas";
 import { SignupData } from "@/common/types";
 import { signup } from "@/services/api/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import GenericAuthForm from "./GenericAuthForm";
 
 export default function SignupForm() {
-  const router = useRouter();
-  const { control, handleSubmit, reset, formState } = useForm<SignupData>({
-    resolver: zodResolver(signupSchema),
-    mode: "onSubmit",
-  });
-  const { isSubmitting } = formState;
-
-  const onSubmit: SubmitHandler<SignupData> = async (data) => {
-    try {
-      const response = await signup(data);
-      toast.success(
-        "Registration successful! Please check your email inbox and confirm your account"
-      );
-      router.push("/login");
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Something went wrong.";
-      toast.error(message);
-      reset();
-    }
-  };
   return (
-    <form
-      className="relative mx-auto flex max-w-md flex-col gap-3"
-      onSubmit={handleSubmit(onSubmit)}
-      noValidate
-    >
-      <h2 className="mb-3 text-2xl font-semibold md:text-3xl lg:self-center lg:text-4xl">
-        Create an account
-      </h2>
-      <FormInput
-        control={control}
-        name="email"
-        type="email"
-        placeholder="Email"
-        iconSrc="images/email.svg"
-      />
-      <FormInput
-        control={control}
-        name="nickname"
-        placeholder="Nickname"
-        iconSrc="images/person.svg"
-      />
-      <FormInput
-        control={control}
-        name="password"
-        type="password"
-        placeholder="Password"
-        iconSrc="images/password.svg"
-      />
-      <Link
-        href="/forgot-password"
-        className="mb-7 block self-end text-base font-medium md:text-lg"
-      >
-        Forgot Password?
-      </Link>
-      <SubmitButton isSubmitting={isSubmitting} title="Sign up" />
-      <p className="m-1 self-center text-base text-tertiary md:text-lg">
-        Already have an account?
-        <Link
-          href="/login"
-          className="inline-block bg-custom-linkGradient bg-cover bg-center p-2 font-medium text-primary"
-        >
-          Log in
-        </Link>
-      </p>
-    </form>
+    <GenericAuthForm<SignupData>
+      schema={signupSchema}
+      title="Create an account"
+      submit={{
+        action: signup,
+        redirectPath: "/login",
+        buttonTitle: "Sign Up",
+      }}
+      inputs={[
+        {
+          name: "email",
+          iconSrc: "images/email.svg",
+          placeholder: "Email",
+          type: "email",
+        },
+        {
+          name: "nickname",
+          iconSrc: "images/person.svg",
+          placeholder: "Nickname",
+          type: "text",
+        },
+        {
+          name: "password",
+          iconSrc: "images/password.svg",
+          placeholder: "Password",
+          type: "password",
+        },
+      ]}
+      footer={{
+        text: "Already have an account?",
+        link: {
+          href: "/login",
+          text: "Log In",
+        },
+      }}
+    />
   );
 }

@@ -1,6 +1,6 @@
-import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { verifyEmail } from "@/services/api/auth";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 export const useVerifyEmailToken = () => {
