@@ -5,6 +5,7 @@ import {
   resetPasswordSchema,
   signupSchema,
 } from "@/common/schemas";
+import { AxiosError } from "axios";
 import { ComponentProps } from "react";
 import { Control } from "react-hook-form";
 import { z } from "zod";
@@ -42,3 +43,5 @@ export interface FormInputProps extends ComponentProps<"input"> {
 export interface ApiResponse {
   message: string;
 }
+
+export type ApiErrorResponse = AxiosError<ApiResponse>;

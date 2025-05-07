@@ -1,4 +1,9 @@
-import { Note, NoteWithoutId, PaginatedNotes } from "@/common/types";
+import {
+  ApiErrorResponse,
+  Note,
+  NoteWithoutId,
+  PaginatedNotes,
+} from "@/common/types";
 import {
   createNote,
   deleteNote,
@@ -19,6 +24,11 @@ export const useNotes = () => {
   const queryClient = useQueryClient();
   const { searchValue } = useSearchStore();
 
+  const handleError = (error: ApiErrorResponse) => {
+    const errorMessage = error.response?.data.message;
+    toast.error(errorMessage);
+  };
+
   const notesQuery = () =>
     useInfiniteQuery({
       queryKey: ["notes", searchValue],
@@ -29,10 +39,8 @@ export const useNotes = () => {
 
   const createMutation = useMutation({
     mutationFn: (note: NoteWithoutId) => createNote(note),
-    onError: () => {
-      toast.error("Failed to add note. Please try again.");
-    },
-    onSuccess: ({ note }) => {
+    onError: handleError,
+    onSuccess: ({ note, message }) => {
       queryClient.setQueryData<NotesInfinityData>(
         ["notes", searchValue],
         (oldData) => {
@@ -52,19 +60,17 @@ export const useNotes = () => {
               ],
             };
           }
-        }
+        },
       );
 
-      toast.success("Note added successfully!");
+      toast.success(message);
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: (note: Note) => updateNote(note),
-    onError: () => {
-      toast.error("Failed to update note. Please try again.");
-    },
-    onSuccess: ({ note }) => {
+    onError: handleError,
+    onSuccess: ({ note, message }) => {
       queryClient.setQueryData<NotesInfinityData>(
         ["notes", searchValue],
         (oldData) => {
@@ -73,7 +79,7 @@ export const useNotes = () => {
           const updatedPages = oldData.pages.map((page) => ({
             ...page,
             notes: page.notes.map((oldNote) =>
-              oldNote._id === note._id ? note : oldNote
+              oldNote._id === note._id ? note : oldNote,
             ),
           }));
 
@@ -81,19 +87,17 @@ export const useNotes = () => {
             ...oldData,
             pages: updatedPages,
           };
-        }
+        },
       );
 
-      toast.success("Note updated successfully!");
+      toast.success(message);
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteNote(id),
-    onError: () => {
-      toast.error("Failed to delete note. Please try again.");
-    },
-    onSuccess: ({ note }) => {
+    onError: handleError,
+    onSuccess: ({ note, message }) => {
       queryClient.setQueryData<NotesInfinityData>(
         ["notes", searchValue],
         (oldData) => {
@@ -108,10 +112,9 @@ export const useNotes = () => {
             ...oldData,
             pages: updatedPages,
           };
-        }
+        },
       );
-
-      toast.success("Note deleted successfully!");
+      toast.success(message);
     },
   });
 

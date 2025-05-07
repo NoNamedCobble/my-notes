@@ -15,7 +15,9 @@ api.interceptors.response.use(
   },
   (error) => {
     if (!error.response?.data) {
-      error.response = { data: { message: "Something went wrong." } };
+      error.response = {
+        data: { message: "Something went wrong. Please try again later." },
+      };
     }
     return Promise.reject(error);
   },
