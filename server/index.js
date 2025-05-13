@@ -10,10 +10,12 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors( {
-  origin: "http://localhost:3001",
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
 
 import noteRoutes from "./routes/notes.js";
 import userRoutes from "./routes/users.js";

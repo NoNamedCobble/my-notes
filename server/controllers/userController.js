@@ -1,25 +1,20 @@
 import { StatusCodes } from "http-status-codes";
 import User from "../models/User.js";
-import {
-  sendEmailVerificationLink,
-  sendPasswordResetLink,
-} from "../services/mailer.js";
+import { sendEmailVerificationLink, sendPasswordResetLink } from "../services/mailer.js";
+import { clearCookie, handleError, setCookie, validateRequiredFields } from "../utils/apiUtils.js";
 
 import {
   generateAccessToken,
   generateRefreshToken,
-  verifyRefreshToken,
   verifyEmailVerificationToken,
   verifyPasswordResetToken,
+  verifyRefreshToken,
 } from "../utils/jwtUtils.js";
 
 export const createUser = async (req, res) => {
   const { email, nickname, password } = req.body;
-
-  if (!email || !nickname || !password) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "All fields are required." });
+  if (!validateRequiredFields([email, nickname, password], res)) {
+    return;
   }
 
   try {
@@ -35,29 +30,24 @@ export const createUser = async (req, res) => {
 
     sendEmailVerificationLink({ email, nickname, _id: newUser._id });
 
-    res.status(StatusCodes.CREATED).json({ message: "User has been created." });
+    res.status(StatusCodes.CREATED).json({
+      message: "Your account has been created. Please check your email and verify your account before logging in.",
+    });
   } catch (error) {
-    console.log("CreateUserError: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("CreateUser", error, res);
   }
 };
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "All fields are required." });
+  if (!validateRequiredFields([email, password], res)) {
+    return;
   }
 
   try {
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: "Invalid email or password." });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid email or password." });
     }
 
     const { _id, nickname } = user;
@@ -74,26 +64,12 @@ export const login = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    res.cookie("access_token", accessToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: process.env.COOKIES_EXPIRES_IN,
-      path: "/",
-    });
+    setCookie("access_token", accessToken, res);
+    setCookie("refresh_token", refreshToken, res);
 
-    res.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: process.env.COOKIES_EXPIRES_IN,
-      path: "/",
-    });
-
-    res.status(StatusCodes.OK).json({ message: "Tokens set in cookies" });
+    res.status(StatusCodes.OK).json({ message: "Successfufully logged in." });
   } catch (error) {
-    console.log("LoginError: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("Login", error, res);
   }
 };
 
@@ -101,34 +77,17 @@ export const logout = async (req, res) => {
   const { userId } = req;
   try {
     const user = await User.findById(userId);
-    if (!user)
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: "User not found." });
+    if (!user) return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found." });
 
     user.refreshToken = "";
     await user.save();
 
-    res.clearCookie("access_token", {
-      httpOnly: true,
-      secure: true,
-      path: "/",
-      sameSite: "Strict",
-    });
-
-    res.clearCookie("refresh_token", {
-      httpOnly: true,
-      secure: true,
-      path: "/",
-      sameSite: "Strict",
-    });
+    clearCookie("access_token", res);
+    clearCookie("refresh_token", res);
 
     res.status(StatusCodes.OK).json({ message: "Successfully logged out." });
   } catch (error) {
-    console.log("LogoutError: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("Logout", error, res);
   }
 };
 
@@ -140,32 +99,20 @@ export const refreshAccessToken = async (req, res, next) => {
 
     const user = await User.findById(_id);
     if (!user) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: "User not found." });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "User not found." });
     }
 
     if (user.refreshToken === "") {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: "You are logout." });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "You are logout." });
     }
 
     const newAccessToken = generateAccessToken({ _id });
-    res.cookie("access_token", newAccessToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: process.env.COOKIES_EXPIRES_IN,
-      path: "/",
-    });
+    setCookie("access_token", newAccessToken, res);
 
     req.userId = _id;
     next();
   } catch (error) {
-    console.log("RefreshAccessTokenError:", error);
-    res
-      .status(StatusCodes.UNAUTHORIZED)
-      .json({ message: "Invalid access token." });
+    handleError("RefreshAccessToken", error, res);
   }
 };
 
@@ -173,46 +120,34 @@ export const changePassword = async (req, res) => {
   const { userId } = req;
   const { oldPassword, newPassword } = req.body;
 
-  if (!oldPassword || !newPassword) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "All fields are required." });
+  if (!validateRequiredFields([oldPassword, newPassword], res)) {
+    return;
   }
 
   try {
     const user = await User.findById(userId);
     if (!user || !(await user.comparePassword(oldPassword))) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: "Old password is incorrect." });
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Old password is incorrect." });
     }
 
     user.password = newPassword;
     await user.save();
 
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "Successfully password changed." });
+    res.status(StatusCodes.OK).json({ message: "Successfully password changed." });
   } catch (error) {
-    console.log("ChangePasswordError: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("ChangePassword", error, res);
   }
 };
 
 export const verifyEmail = async (req, res) => {
   const { token } = req.body;
 
-  if (!token) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "Token is required." });
+  if (!validateRequiredFields([token], res)) {
+    return;
   }
 
   try {
     const { _id } = verifyEmailVerificationToken(token);
-
     const user = await User.findOneAndUpdate(
       { _id, isVerified: false },
       {
@@ -221,83 +156,59 @@ export const verifyEmail = async (req, res) => {
     );
 
     if (!user) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: "User not found." });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "User not found." });
     }
 
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "Your account has been successfully verified." });
+    res.status(StatusCodes.OK).json({ message: "Your account has been successfully verified." });
   } catch (error) {
-    console.log("VerifyEmail: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("VerifyEmail", error, res);
   }
 };
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
-  if (!email) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "Email is required." });
+  if (!validateRequiredFields([email], res)) {
+    return;
   }
 
   try {
     const user = await User.findOne({ email, isVerified: true });
     if (!user) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: "User not found." });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "User not found." });
     }
 
     const { _id, nickname } = user;
     sendPasswordResetLink({ email, _id, nickname });
 
     res.status(StatusCodes.OK).json({
-      message:
-        "Password reset request successful! Check your inbox for a reset link.",
+      message: "Password reset request successful! Check your inbox for a reset link.",
     });
   } catch (error) {
-    console.log("RequestPasswordReset: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("ForgotPassword", error, res);
   }
 };
 
 export const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
 
-  if (!token || !newPassword) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "All fields are required." });
+  if (!validateRequiredFields([token, newPassword], res)) {
+    return;
   }
 
   try {
     const { _id } = verifyPasswordResetToken(token);
     const user = await User.findOne({ _id, isVerified: true });
     if (!user) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ message: "User not found." });
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "User not found." });
     }
 
     user.password = newPassword;
 
     await user.save();
 
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "Password successfully changed!" });
+    res.status(StatusCodes.OK).json({ message: "Password successfully changed!" });
   } catch (error) {
-    console.log("ResetPassword: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("ResetPassword", error, res);
   }
 };

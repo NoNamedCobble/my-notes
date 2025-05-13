@@ -1,15 +1,13 @@
 import { StatusCodes } from "http-status-codes";
 import Note from "../models/Note.js";
+import { handleError, validateRequiredFields } from "../utils/apiUtils.js";
 
 export const createNote = async (req, res) => {
   const { userId } = req;
   const { title, content, background } = req.body;
-  if (!title || !content || !background) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: "All fields are required." });
+  if (!validateRequiredFields([title, content, background], res)) {
+    return;
   }
-
   try {
     const newNote = new Note({ title, content, userId, background });
     await newNote.save();
@@ -18,10 +16,7 @@ export const createNote = async (req, res) => {
       note: { _id: newNote._id, title, content, background },
     });
   } catch (error) {
-    console.error("CreateNoteError: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("CreateNote", error, res);
   }
 };
 
@@ -32,10 +27,7 @@ export const getNotes = async (req, res) => {
 
   const query = {
     userId,
-    $or: [
-      { title: { $regex: search, $options: "i" } },
-      { content: { $regex: search, $options: "i" } },
-    ],
+    $or: [{ title: { $regex: search, $options: "i" } }, { content: { $regex: search, $options: "i" } }],
   };
 
   try {
@@ -51,10 +43,7 @@ export const getNotes = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ nextPage, notes });
   } catch (error) {
-    console.error("GetNoteError: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("GetNotes", error, res);
   }
 };
 
@@ -62,21 +51,14 @@ export const getNoteById = async (req, res) => {
   const { userId } = req;
   const { id } = req.params;
   try {
-    const note = await Note.findOne({ _id: id, userId }).select(
-      "title content background"
-    );
+    const note = await Note.findOne({ _id: id, userId }).select("title content background");
     if (!note) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: "Note not found." });
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Note not found." });
     }
 
     res.status(StatusCodes.OK).json(note);
   } catch (error) {
-    console.error("GetNoteById: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("GetNoteById", error, res);
   }
 };
 
@@ -84,6 +66,9 @@ export const updateNoteById = async (req, res) => {
   const { userId } = req;
   const { id } = req.params;
   const { title, content, background } = req.body;
+  if (!validateRequiredFields([title, content, background], res)) {
+    return;
+  }
 
   try {
     const updatedNote = await Note.findOneAndUpdate(
@@ -91,21 +76,13 @@ export const updateNoteById = async (req, res) => {
       { title, content, background },
       { new: true, runValidators: true }
     );
-
     if (!updatedNote) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: "Note not found." });
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Note not found." });
     }
 
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "Note updated successfully.", note: updatedNote });
+    res.status(StatusCodes.OK).json({ message: "Note updated successfully.", note: updatedNote });
   } catch (error) {
-    console.error("UpdateNoteById: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("UpdateNoteById", error, res);
   }
 };
 
@@ -115,20 +92,12 @@ export const deleteNoteById = async (req, res) => {
 
   try {
     const deletedNote = await Note.findOneAndDelete({ _id: id, userId });
-
     if (!deletedNote) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ message: "Note not found." });
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Note not found." });
     }
 
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "Note deleted successfully.", note: deletedNote });
+    res.status(StatusCodes.OK).json({ message: "Note deleted successfully.", note: deletedNote });
   } catch (error) {
-    console.error("DelteNoteById: ", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Server error. Please try again later." });
+    handleError("DeleteNoteById", error, res);
   }
 };

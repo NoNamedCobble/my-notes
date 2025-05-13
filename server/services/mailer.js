@@ -1,8 +1,5 @@
 import nodemailer from "nodemailer";
-import {
-  generateEmailVerificationToken,
-  generatePasswordResetToken,
-} from "../utils/jwtUtils.js";
+import { generateEmailVerificationToken, generatePasswordResetToken } from "../utils/jwtUtils.js";
 
 const sendMail = async ({ to, subject, html }) => {
   const mailOptions = {
@@ -29,7 +26,7 @@ export const sendEmailVerificationLink = ({ email, nickname, _id }) => {
   const token = generateEmailVerificationToken({
     _id,
   });
-  const link = `${process.env.FRONTEND_URL}/login?token=${token}`;
+  const link = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
   const mailOptions = {
     to: email,
     subject: "Account Verification",
