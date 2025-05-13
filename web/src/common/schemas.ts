@@ -28,10 +28,7 @@ export const resetPasswordSchema = z
   .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: "Passwords must match.",
     path: ["confirmNewPassword"],
-  })
-  .transform((data) => ({
-    newPassword: data.newPassword,
-  }));
+  });
 
 export const noteSchema = z.object({
   title: z.string().min(1, "Title is required."),

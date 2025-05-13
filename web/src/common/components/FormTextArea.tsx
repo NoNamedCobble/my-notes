@@ -1,20 +1,19 @@
 "use client";
-import { ComponentProps } from "react";
-import { Control, useController } from "react-hook-form";
 import FormErrorMessage from "@/common/components/FormErrorMessage";
+import { ComponentProps } from "react";
+import { Control, FieldValues, Path, useController } from "react-hook-form";
 
-type FormInputProps = ComponentProps<"textarea"> & {
-  control: Control<any>;
-  name: string;
-  iconSrc: string;
-};
+export interface FormTextAreaProps<T extends FieldValues>
+  extends ComponentProps<"textarea"> {
+  control: Control<T>;
+  name: Path<T>;
+}
 
-export default function FormInput({
+export default function FormTextArea<T extends FieldValues>({
   control,
   name,
-  iconSrc,
   ...props
-}: FormInputProps) {
+}: FormTextAreaProps<T>) {
   const {
     formState: { errors, isSubmitting },
   } = useController({ control, name });

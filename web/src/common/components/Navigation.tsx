@@ -1,9 +1,11 @@
+import { logout } from "@/services/api/auth";
+import { AxiosError } from "axios";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import FocusLock from "react-focus-lock";
-import { logout } from "@/services/api/auth";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import FocusLock from "react-focus-lock";
+import { toast } from "react-toastify";
 
 type NavigationProps = {
   isNavOpen: boolean;
@@ -15,7 +17,12 @@ export default function Navigation({ isNavOpen }: NavigationProps) {
     try {
       await logout();
       router.push("/login");
-    } catch (error) {}
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const message = error.response?.data?.message;
+        toast.error(message);
+      }
+    }
   };
 
   return (
@@ -25,7 +32,7 @@ export default function Navigation({ isNavOpen }: NavigationProps) {
           <FocusLock group="navigation">
             <motion.nav
               id="navigation"
-              className="fixed left-0 top-0 flex h-full w-full flex-col items-center bg-primary text-secondary bg-custom-nav "
+              className="bg-custom-nav fixed left-0 top-0 flex h-full w-full flex-col items-center bg-primary text-secondary"
               initial={{ y: "-100%" }}
               animate={{ y: 0 }}
               exit={{ y: "-100%" }}
@@ -43,13 +50,13 @@ export default function Navigation({ isNavOpen }: NavigationProps) {
                 className="my-auto flex h-3/5 flex-col items-center justify-center gap-10 text-7xl lg:flex-row lg:gap-20"
               >
                 <li className="">
-                  <Link className="hover:scale-125 duration-75 block" href="/">
+                  <Link className="block duration-75 hover:scale-125" href="/">
                     Home
                   </Link>
                 </li>
                 <li>
                   <button
-                    className="hover:scale-125 duration-75"
+                    className="duration-75 hover:scale-125"
                     onClick={handleLogout}
                   >
                     Logout
@@ -59,7 +66,7 @@ export default function Navigation({ isNavOpen }: NavigationProps) {
 
               <Link
                 href="https://github.com/NoNamedCobble"
-                className="mb-4 flex gap-2 p-2 hover:scale-125 duration-75 "
+                className="mb-4 flex gap-2 p-2 duration-75 hover:scale-125"
               >
                 <Image
                   src="images/github.svg"

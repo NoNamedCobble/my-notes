@@ -1,14 +1,11 @@
 import {
+  ApiResponse,
   ForgotPasswordData,
   LoginData,
   ResetPasswordData,
   SignupData,
 } from "@/common/types";
 import { api } from "@/services/api/instance";
-
-interface ApiResponse {
-  message: string;
-}
 
 export async function login(data: LoginData) {
   const response = await api.post<ApiResponse>("/users/login", data);
@@ -33,7 +30,7 @@ export async function verifyEmail(token: string) {
 }
 
 export async function resetPassword(
-  data: ResetPasswordData & { token: string },
+  data: Omit<ResetPasswordData, "confirmNewPassword"> & { token: string },
 ) {
   const response = await api.post<ApiResponse>("/users/reset-password", data);
   return response.data;

@@ -2,14 +2,14 @@
 import FormErrorMessage from "@/common/components/FormErrorMessage";
 import { FormInputProps } from "@/common/types";
 import Image from "next/image";
-import { useController } from "react-hook-form";
+import { FieldValues, useController } from "react-hook-form";
 
-export default function FormInput({
+export default function FormInput<T extends FieldValues>({
   control,
   name,
   iconSrc,
   ...props
-}: FormInputProps) {
+}: FormInputProps<T>) {
   const {
     formState: { errors, isSubmitting },
   } = useController({ control, name });

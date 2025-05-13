@@ -1,13 +1,10 @@
 "use client";
-import { useVerifyEmailToken } from "@/common/hooks/useVerifyEmailToken";
 import { loginSchema } from "@/common/schemas";
 import { LoginData } from "@/common/types";
 import { login } from "@/services/api/auth";
 import GenericAuthForm from "./GenericAuthForm";
 
 export default function LoginForm() {
-  useVerifyEmailToken();
-
   return (
     <GenericAuthForm<LoginData>
       schema={loginSchema}

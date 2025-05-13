@@ -14,11 +14,10 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (!error.response?.data) {
-      error.response = {
-        data: { message: "Something went wrong. Please try again later." },
-      };
-    }
+    const defaultErrorMessage = "Something went wrong. Please try again later.";
+    const message = error.response?.data?.message ?? defaultErrorMessage;
+
+    error.message = message;
     return Promise.reject(error);
   },
 );

@@ -38,6 +38,7 @@ export default function AuthLayout({ children }: LayoutProps) {
           width="200"
           height="200"
           alt="notes"
+          priority
           className="absolute right-0 top-0 z-10 w-2/4 max-w-64 -translate-y-3/4 lg:max-w-72 lg:landscape:bottom-0 lg:landscape:top-auto lg:landscape:translate-x-2/4 lg:landscape:translate-y-[15%]"
         />
       </main>

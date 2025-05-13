@@ -1,4 +1,3 @@
-import WarningPopup from "@/common/components/modals/WarningPopup";
 import QueryProvider from "@/common/components/providers/QueryProvider";
 import { Jost } from "@next/font/google";
 import "./globals.css";

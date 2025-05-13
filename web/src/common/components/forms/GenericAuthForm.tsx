@@ -2,6 +2,7 @@
 
 import { ApiResponse, FormInputProps } from "@/common/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isAxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -18,7 +19,7 @@ interface GenericAuthFormProps<T extends FieldValues> {
     redirectPath: string;
     buttonTitle: string;
   };
-  inputs: Omit<FormInputProps, "control">[];
+  inputs: Omit<FormInputProps<T>, "control">[];
   auxiliaryLink?: {
     text: string;
     href: string;
@@ -51,11 +52,13 @@ export default function GenericAuthForm<T extends FieldValues>({
       const { message } = await submit.action(data);
       toast.success(message);
       router.push(submit.redirectPath);
-    } catch (error: any) {
-      const message = error.response.data.message;
-      toast.error(message);
-      reset();
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const message = error.message;
+        toast.error(message);
+      }
     }
+    reset();
   };
   return (
     <form
@@ -68,7 +71,7 @@ export default function GenericAuthForm<T extends FieldValues>({
       </h2>
 
       {inputs.map((input) => (
-        <FormInput key={input.name} {...input} control={control} />
+        <FormInput<T> key={input.name} {...input} control={control} />
       ))}
 
       {auxiliaryLink && (

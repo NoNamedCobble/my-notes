@@ -5,9 +5,8 @@ import {
   resetPasswordSchema,
   signupSchema,
 } from "@/common/schemas";
-import { AxiosError } from "axios";
 import { ComponentProps } from "react";
-import { Control } from "react-hook-form";
+import { Control, FieldValues, Path } from "react-hook-form";
 import { z } from "zod";
 
 export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
@@ -34,9 +33,10 @@ export interface PaginatedNotes {
   notes: Note[];
 }
 
-export interface FormInputProps extends ComponentProps<"input"> {
-  control: Control<any>;
-  name: string;
+export interface FormInputProps<T extends FieldValues>
+  extends ComponentProps<"input"> {
+  control: Control<T>;
+  name: Path<T>;
   iconSrc: string;
 }
 
@@ -44,4 +44,6 @@ export interface ApiResponse {
   message: string;
 }
 
-export type ApiErrorResponse = AxiosError<ApiResponse>;
+export interface PageSearchParamsWithToken {
+  searchParams: { token: string };
+}

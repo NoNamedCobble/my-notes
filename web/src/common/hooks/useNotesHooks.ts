@@ -1,9 +1,4 @@
-import {
-  ApiErrorResponse,
-  Note,
-  NoteWithoutId,
-  PaginatedNotes,
-} from "@/common/types";
+import { Note, NoteWithoutId, PaginatedNotes } from "@/common/types";
 import {
   createNote,
   deleteNote,
@@ -17,27 +12,32 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 type NotesInfinityData = InfiniteData<PaginatedNotes>;
-export const useNotes = () => {
+
+const handleError = (error: AxiosError) => {
+  const errorMessage = error.message;
+  toast.error(errorMessage);
+};
+
+export const useNotesQuery = () => {
+  const { searchValue } = useSearchStore();
+
+  return useInfiniteQuery({
+    queryKey: ["notes", searchValue],
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) => fetchNotes({ pageParam, searchValue }),
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+  });
+};
+
+export const useCreateNoteMutation = () => {
   const queryClient = useQueryClient();
   const { searchValue } = useSearchStore();
 
-  const handleError = (error: ApiErrorResponse) => {
-    const errorMessage = error.response?.data.message;
-    toast.error(errorMessage);
-  };
-
-  const notesQuery = () =>
-    useInfiniteQuery({
-      queryKey: ["notes", searchValue],
-      initialPageParam: 1,
-      queryFn: ({ pageParam }) => fetchNotes({ pageParam, searchValue }),
-      getNextPageParam: (lastPage) => lastPage.nextPage,
-    });
-
-  const createMutation = useMutation({
+  return useMutation({
     mutationFn: (note: NoteWithoutId) => createNote(note),
     onError: handleError,
     onSuccess: ({ note, message }) => {
@@ -62,12 +62,16 @@ export const useNotes = () => {
           }
         },
       );
-
       toast.success(message);
     },
   });
+};
 
-  const updateMutation = useMutation({
+export const useUpdateNoteMutation = () => {
+  const queryClient = useQueryClient();
+  const { searchValue } = useSearchStore();
+
+  return useMutation({
     mutationFn: (note: Note) => updateNote(note),
     onError: handleError,
     onSuccess: ({ note, message }) => {
@@ -89,12 +93,16 @@ export const useNotes = () => {
           };
         },
       );
-
       toast.success(message);
     },
   });
+};
 
-  const deleteMutation = useMutation({
+export const useDeleteNoteMutation = () => {
+  const queryClient = useQueryClient();
+  const { searchValue } = useSearchStore();
+
+  return useMutation({
     mutationFn: (id: string) => deleteNote(id),
     onError: handleError,
     onSuccess: ({ note, message }) => {
@@ -117,11 +125,4 @@ export const useNotes = () => {
       toast.success(message);
     },
   });
-
-  return {
-    notesQuery,
-    createNote: createMutation.mutate,
-    updateNote: updateMutation.mutate,
-    deleteNote: deleteMutation.mutate,
-  };
 };

@@ -1,19 +1,16 @@
 "use client";
 import NoteCard from "@/common/components/NoteCard";
-import { useNotes } from "@/common/hooks/useNotes";
-import { Note } from "@/common/types";
 import { AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
+import { useNotesQuery } from "../hooks/useNotesHooks";
 
 export default function NoteCardsList() {
-  const { notesQuery } = useNotes();
-
   const { ref, inView } = useInView({
     threshold: 0.5,
   });
 
-  const { data, isLoading, fetchNextPage } = notesQuery();
+  const { data, isLoading, fetchNextPage } = useNotesQuery();
 
   useEffect(() => {
     if (inView) {
@@ -30,7 +27,7 @@ export default function NoteCardsList() {
       <AnimatePresence>
         {data &&
           data.pages.map(({ notes }) =>
-            notes.map((note: Note) => <NoteCard key={note._id} {...note} />)
+            notes.map((note) => <NoteCard key={note._id} {...note} />),
           )}
       </AnimatePresence>
       <div ref={ref}></div>

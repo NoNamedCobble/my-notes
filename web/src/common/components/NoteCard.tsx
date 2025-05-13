@@ -1,10 +1,10 @@
 "use client";
 import NoteCardDropdown from "@/common/components/NoteCardDropdown";
-import { useNotes } from "@/common/hooks/useNotes";
 import { Note } from "@/common/types";
 import { getBestColor } from "@/common/utils";
 import { useNoteModalStore } from "@/store/useNoteModalStore";
 import { motion } from "framer-motion";
+import { useDeleteNoteMutation } from "../hooks/useNotesHooks";
 
 export default function NoteCard({
   _id,
@@ -13,14 +13,14 @@ export default function NoteCard({
   background = "#ffffff",
 }: Note) {
   const { openEditModal } = useNoteModalStore();
-  const { deleteNote } = useNotes();
+  const deleteNoteMutation = useDeleteNoteMutation();
 
   const options = [
     {
       label: "Edit",
       onClick: () => openEditModal({ _id, title, content, background }),
     },
-    { label: "Delete", onClick: () => deleteNote(_id) },
+    { label: "Delete", onClick: () => deleteNoteMutation.mutate(_id) },
   ];
 
   const bestColor = getBestColor(background);

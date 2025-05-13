@@ -1,18 +1,19 @@
 "use client";
 import { ComponentProps } from "react";
 import { HexColorInput, HexColorPicker } from "react-colorful";
-import { Control, Controller } from "react-hook-form";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
-type FormColorPickerProps = ComponentProps<typeof HexColorPicker> & {
-  control: Control<any>;
-  name: string;
-};
+export interface FormColorPickerProps<T extends FieldValues>
+  extends ComponentProps<typeof HexColorPicker> {
+  control: Control<T>;
+  name: Path<T>;
+}
 
-export default function FormColorPicker({
+export default function FormColorPicker<T extends FieldValues>({
   control,
   name,
   ...props
-}: FormColorPickerProps) {
+}: FormColorPickerProps<T>) {
   return (
     <>
       <Controller

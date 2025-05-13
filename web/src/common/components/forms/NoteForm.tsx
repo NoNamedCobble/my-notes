@@ -3,7 +3,10 @@ import FormColorPicker from "@/common/components/FormColorPicker";
 import FormInput from "@/common/components/FormInput";
 import FormTextArea from "@/common/components/FormTextArea";
 import SubmitButton from "@/common/components/SubmitButton";
-import { useNotes } from "@/common/hooks/useNotes";
+import {
+  useCreateNoteMutation,
+  useUpdateNoteMutation,
+} from "@/common/hooks/useNotesHooks";
 import { useOutsideClick } from "@/common/hooks/useOutsideClick";
 import { noteSchema } from "@/common/schemas";
 import { NoteWithoutId } from "@/common/types";
@@ -14,7 +17,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 export default function NoteForm() {
   const { closeModal, currentNote } = useNoteModalStore();
-  const isEditMode = useMemo(() => Boolean(currentNote), []);
+  const isEditMode = useMemo(() => Boolean(currentNote), [currentNote]);
   const { control, handleSubmit, reset, formState } = useForm<NoteWithoutId>({
     shouldUnregister: true,
     resolver: zodResolver(noteSchema),
@@ -31,16 +34,18 @@ export default function NoteForm() {
     submit: isEditMode ? "Save changes" : "Create",
   };
 
-  const { createNote, updateNote } = useNotes();
+  const createNoteMutation = useCreateNoteMutation();
+  const updateNoteMutation = useUpdateNoteMutation();
+
   const ref = useOutsideClick<HTMLFormElement>(closeModal);
 
   const onSubmit: SubmitHandler<NoteWithoutId> = async (data) => {
     if (isEditMode) {
       if (currentNote) {
-        updateNote({ _id: currentNote._id, ...data });
+        updateNoteMutation.mutate({ _id: currentNote._id, ...data });
       }
     } else {
-      createNote(data);
+      createNoteMutation.mutate(data);
     }
 
     reset();
@@ -64,20 +69,19 @@ export default function NoteForm() {
         <span className="absolute h-0.5 w-3/4 rotate-45 bg-primary"></span>
         <span className="absolute h-0.5 w-3/4 -rotate-45 bg-primary"></span>
       </button>
-      <FormInput
+      <FormInput<NoteWithoutId>
         iconSrc="images/title.svg"
         name="title"
         control={control}
         placeholder="Title"
       />
       <div className="relative flex md:gap-2">
-        <FormTextArea
-          iconSrc="images/content.svg"
+        <FormTextArea<NoteWithoutId>
           name="content"
           control={control}
           placeholder="Content"
         />
-        <FormColorPicker control={control} name="background" />
+        <FormColorPicker<NoteWithoutId> control={control} name="background" />
       </div>
       <SubmitButton isSubmitting={isSubmitting} title={formLabels.submit} />
     </form>

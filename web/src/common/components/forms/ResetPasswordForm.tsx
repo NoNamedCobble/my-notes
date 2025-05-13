@@ -2,28 +2,19 @@
 import { resetPasswordSchema } from "@/common/schemas";
 import { ResetPasswordData } from "@/common/types";
 import { resetPassword } from "@/services/api/auth";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 import GenericAuthForm from "./GenericAuthForm";
 
-export default function ResetPasswordForm() {
-  const router = useRouter();
-  const token = useSearchParams().get("token");
-
-  useEffect(() => {
-    if (!token) {
-      return router.push("/login");
-    }
-  }, [token, router]);
-
-  if (!token) return;
-
+type ResetPasswordFormProps = {
+  token: string;
+};
+export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   return (
     <GenericAuthForm<ResetPasswordData>
       schema={resetPasswordSchema}
       title="Change your password"
       submit={{
-        action: (data) => resetPassword({ token, ...data }),
+        action: (data) =>
+          resetPassword({ token, newPassword: data.newPassword }),
         redirectPath: "/login",
         buttonTitle: "Submit",
       }}
