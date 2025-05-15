@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer";
-import { generateEmailVerificationToken, generatePasswordResetToken } from "../utils/jwtUtils.js";
+import {
+  generateEmailVerificationToken,
+  generatePasswordResetToken,
+} from "../utils/jwtUtils.js";
 
 const sendMail = async ({ to, subject, html }) => {
   const mailOptions = {
@@ -12,7 +15,7 @@ const sendMail = async ({ to, subject, html }) => {
   const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
     port: process.env.MAIL_PORT,
-    secure: false,
+    secure: process.env.MAIL_SECURE,
     auth: {
       user: process.env.MAIL_USER,
       pass: process.env.MAIL_PASS,
