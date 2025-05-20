@@ -1,5 +1,5 @@
 import QueryProvider from "@/common/components/providers/QueryProvider";
-import { Jost } from "@next/font/google";
+import { Jost } from "next/font/google";
 import "./globals.css";
 
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500", "700"] });
