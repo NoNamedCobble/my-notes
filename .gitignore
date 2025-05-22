@@ -5,3 +5,4 @@ server/.env
 web/node_modules
 web/.next/
 web/.prettierrc
+web/.env
