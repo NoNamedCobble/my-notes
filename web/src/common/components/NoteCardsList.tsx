@@ -27,7 +27,7 @@ export default function NoteCardsList() {
               .fill(0)
               .map((_, i) => <NoteCardSkeleton key={i} />)
           : data?.pages.map(({ notes }) =>
-              notes.map((note) => <NoteCard key={note._id} {...note} />)
+              notes.map((note) => <NoteCard key={note._id} {...note} />),
             )}
       </AnimatePresence>
       <div ref={ref}></div>

@@ -64,7 +64,7 @@ export const useBlob = () => {
     };
 
     animateBlob();
-  }, [config, animate]);
+  }, [config, animate, scope]);
 
   return { config, getRandomPosition, scope };
 };

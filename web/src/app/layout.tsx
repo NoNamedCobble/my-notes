@@ -1,5 +1,7 @@
 import QueryProvider from "@/common/components/providers/QueryProvider";
+import SkeletonThemeProvider from "@/common/components/providers/SkeletonThemeProvider";
 import { Jost } from "next/font/google";
+import "react-loading-skeleton/dist/skeleton.css";
 import "./globals.css";
 
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500", "700"] });
@@ -23,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${jost.className} mx-auto max-w-[1920px] bg-primary`}>
-        <QueryProvider>{children}</QueryProvider>
+        <SkeletonThemeProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </SkeletonThemeProvider>
       </body>
     </html>
   );
