@@ -23,7 +23,7 @@ export default function NavigationButton({
         aria-controls="navigation"
         aria-expanded={isNavOpen}
         aria-label={isNavOpen ? "Close navigation" : "Open navigation"}
-        className="relative flex h-16 w-16 flex-col items-center justify-center gap-2 justify-self-end hover:bg-opacity-10 hover:bg-secondary rounded-full duration-75"
+        className="relative flex h-16 w-16 flex-col items-center justify-center gap-2 justify-self-end rounded-full duration-75 hover:bg-secondary hover:bg-opacity-10"
       >
         <motion.span
           className="block h-1 w-4/6 origin-center rounded-full bg-secondary"

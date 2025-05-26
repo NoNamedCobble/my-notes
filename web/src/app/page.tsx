@@ -1,6 +1,6 @@
 "use client";
 import AnimatedBackground from "@/common/components/AnimatedBackground";
-import Image from "next/image";
+import Logo from "@/common/components/Logo";
 import Link from "next/link";
 import { Typewriter } from "react-simple-typewriter";
 
@@ -10,17 +10,7 @@ export default function Home() {
     <section className="flex min-h-dvh flex-col px-4 font-medium text-secondary">
       <AnimatedBackground />
       <header className="w-full py-4">
-        <Link href="/" className="inline-flex items-center gap-2">
-          <Image
-            src="images/notes.svg"
-            alt="My Notes"
-            aria-hidden="true"
-            width="50"
-            height="50"
-            className="h-13 w-13"
-          />
-          <h1 className="text-2xl">My Notes</h1>
-        </Link>
+        <Logo />
       </header>
       <main className="z-20 mb-10 flex flex-1 flex-col items-center justify-center">
         <div className="mt-6 flex flex-col gap-3 text-center">

@@ -1,10 +1,13 @@
 import { useSearchStore } from "@/store/useSearchStore";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 const DELAY = 400;
-export default function SearchInput() {
+
+type SearchInputProps = ComponentProps<"input">;
+
+export default function SearchInput(props: SearchInputProps) {
   const { setSearchValue } = useSearchStore();
   const [inputValue, setInputValue] = useState("");
   const [debouncedValue] = useDebounce(inputValue, DELAY);
@@ -14,7 +17,10 @@ export default function SearchInput() {
   }, [debouncedValue, setSearchValue]);
 
   return (
-    <div role="search" className="flex w-full items-center">
+    <div
+      role="search"
+      className="flex h-14 w-full max-w-screen-sm items-center text-black"
+    >
       <Image
         src="images/search.svg"
         alt="Search input"
@@ -29,6 +35,7 @@ export default function SearchInput() {
         aria-label="Search notes"
         onChange={(e) => setInputValue(e.target.value)}
         value={inputValue}
+        {...props}
       />
     </div>
   );

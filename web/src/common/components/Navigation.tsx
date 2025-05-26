@@ -26,7 +26,7 @@ export default function Navigation({ isNavOpen }: NavigationProps) {
   };
 
   return (
-    <div>
+    <div className="absolute">
       <AnimatePresence>
         {isNavOpen && (
           <FocusLock group="navigation">
