@@ -20,10 +20,6 @@ export const authMiddleware = async (req, res, next) => {
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: "User not found." });
     }
 
-    if (user.refreshToken === "") {
-      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "You are logout." });
-    }
-
     req.userId = _id;
     next();
   } catch (error) {

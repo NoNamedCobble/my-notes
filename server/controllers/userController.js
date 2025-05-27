@@ -102,7 +102,9 @@ export const refreshAccessToken = async (req, res, next) => {
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: "User not found." });
     }
 
-    if (user.refreshToken === "") {
+    if (refreshToken !== user.refreshToken) {
+      clearCookie("access_token", res);
+      clearCookie("refresh_token", res);
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: "You are logout." });
     }
 
