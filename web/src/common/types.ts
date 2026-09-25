@@ -45,5 +45,5 @@ export interface ApiResponse {
 }
 
 export interface PageSearchParamsWithToken {
-  searchParams: { token: string };
+  searchParams: Promise<{ token: string }>;
 }

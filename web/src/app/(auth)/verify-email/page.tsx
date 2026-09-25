@@ -1,17 +1,15 @@
 "use client";
 
-import { PageSearchParamsWithToken } from "@/common/types";
 import { verifyEmail } from "@/services/api/auth";
 import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
 import { toast } from "react-toastify";
 
-export default function VerifyEmail({
-  searchParams,
-}: PageSearchParamsWithToken) {
+function VerifyEmailContent() {
   const router = useRouter();
-  const token = searchParams.token;
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -26,6 +24,7 @@ export default function VerifyEmail({
           toast.error(message);
         }
       }
+
       router.push("/login");
     };
 
@@ -36,5 +35,19 @@ export default function VerifyEmail({
     <h2 className="text-2xl font-semibold md:mb-6 md:text-3xl lg:self-center lg:text-4xl">
       Email Verification in Progress...
     </h2>
+  );
+}
+
+export default function VerifyEmail() {
+  return (
+    <Suspense
+      fallback={
+        <h2 className="text-2xl font-semibold">
+          Email Verification in Progress...
+        </h2>
+      }
+    >
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

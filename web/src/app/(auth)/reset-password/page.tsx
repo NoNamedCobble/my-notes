@@ -6,8 +6,9 @@ export const metadata = {
   description: "Recover your password",
 };
 
-export default function ResetPassword({
+export default async function ResetPassword({
   searchParams,
 }: PageSearchParamsWithToken) {
-  return <ResetPasswordForm token={searchParams.token} />;
+  const { token } = await searchParams;
+  return <ResetPasswordForm token={token} />;
 }
